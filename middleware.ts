@@ -26,6 +26,17 @@ export default withAuth(
 
     const userRole = token.role as string
 
+    // Block access to faiz routes for everyone - redirect based on role
+    if (pathname.startsWith('/faiz/')) {
+      if (userRole === 'clinician') {
+        return NextResponse.redirect(new URL('/medical/dashboard', request.url))
+      } else if (userRole === 'patient') {
+        return NextResponse.redirect(new URL('/patient/dashboard', request.url))
+      } else {
+        return NextResponse.redirect(new URL('/select-role', request.url))
+      }
+    }
+
     // Fast role-based redirects
     if (!userRole && pathname !== '/select-role') {
       return NextResponse.redirect(new URL('/select-role', request.url))
@@ -33,7 +44,7 @@ export default withAuth(
 
     // Optimized route protection with early returns
     if (userRole === 'clinician') {
-      if (pathname.startsWith('/patient/') || pathname.startsWith('/faiz/')) {
+      if (pathname.startsWith('/patient/')) {
         return NextResponse.redirect(new URL('/medical/dashboard', request.url))
       }
       if (pathname === '/dashboard') {
