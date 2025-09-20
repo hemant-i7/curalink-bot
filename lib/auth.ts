@@ -4,7 +4,7 @@ import connectDB from './mongodb';
 import Patient from './models/Patient';
 
 // Cache for user roles to avoid repeated DB calls
-const roleCache = new Map<string, { role?: string; hasCompletedInfo?: boolean; timestamp: number }>();
+const roleCache = new Map<string, { role?: string; timestamp: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 async function getUserRole(email: string) {
@@ -13,15 +13,14 @@ async function getUserRole(email: string) {
   
   // Return cached data if it's still valid
   if (cached && (now - cached.timestamp) < CACHE_DURATION) {
-    return { role: cached.role, hasCompletedInfo: cached.hasCompletedInfo };
+    return { role: cached.role };
   }
   
   try {
     await connectDB();
     const patient = await Patient.findOne({ userId: email }).lean();
     const result = {
-      role: patient?.role,
-      hasCompletedInfo: patient?.hasCompletedInfo
+      role: patient?.role
     };
     
     // Cache the result
@@ -33,7 +32,7 @@ async function getUserRole(email: string) {
     return result;
   } catch (error) {
     console.error('Error fetching user role:', error);
-    return { role: undefined, hasCompletedInfo: undefined };
+    return { role: undefined };
   }
 }
 
@@ -57,9 +56,8 @@ export const authOptions: NextAuthOptions = {
       
       // Only fetch role on initial sign-in or when explicitly triggered
       if (token.email && (!token.role || trigger === 'update')) {
-        const { role, hasCompletedInfo } = await getUserRole(token.email);
+        const { role } = await getUserRole(token.email);
         token.role = role;
-        token.hasCompletedInfo = hasCompletedInfo;
       }
       
       return token;
@@ -67,7 +65,6 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.role = token.role;
-      session.hasCompletedInfo = token.hasCompletedInfo;
       return session;
     },
     async redirect({ url, baseUrl, token }) {
@@ -77,7 +74,7 @@ export const authOptions: NextAuthOptions = {
         if (token?.role === 'clinician') {
           return `${baseUrl}/medical/dashboard`;
         } else if (token?.role === 'patient') {
-          return token?.hasCompletedInfo ? `${baseUrl}/patient/dashboard` : `${baseUrl}/faiz/info`;
+          return `${baseUrl}/patient/dashboard`;
         }
         return `${baseUrl}/select-role`;
       }

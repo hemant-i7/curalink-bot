@@ -25,7 +25,6 @@ export default withAuth(
     }
 
     const userRole = token.role as string
-    const hasCompletedInfo = token.hasCompletedInfo as boolean
 
     // Fast role-based redirects
     if (!userRole && pathname !== '/select-role') {
@@ -44,11 +43,8 @@ export default withAuth(
       if (pathname.startsWith('/medical/')) {
         return NextResponse.redirect(new URL('/patient/dashboard', request.url))
       }
-      if (!hasCompletedInfo && pathname.startsWith('/patient/') && pathname !== '/faiz/info') {
-        return NextResponse.redirect(new URL('/faiz/info', request.url))
-      }
       if (pathname === '/dashboard') {
-        return NextResponse.redirect(new URL(hasCompletedInfo ? '/patient/dashboard' : '/faiz/info', request.url))
+        return NextResponse.redirect(new URL('/patient/dashboard', request.url))
       }
     }
 

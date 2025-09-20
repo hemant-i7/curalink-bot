@@ -38,7 +38,6 @@ export async function POST(request: Request) {
     
     const updateData = {
       userId: session.user.email,
-      hasCompletedInfo: true,
       personalInfo: {
         name: session.user.name || '',
         email: session.user.email,
@@ -76,8 +75,7 @@ export async function POST(request: Request) {
     invalidateRoleCache(session.user.email);
 
     return NextResponse.json({
-      message: 'User information saved successfully',
-      hasCompletedInfo: true
+      message: 'User information saved successfully'
     });
 
   } catch (error) {
@@ -105,7 +103,6 @@ export async function GET() {
     const patient = await Patient.findOne({ userId: session.user.email });
     
     return NextResponse.json({
-      hasCompletedInfo: patient?.hasCompletedInfo || false,
       role: patient?.role || null,
       personalInfo: patient?.personalInfo || {},
       medicalHistory: patient?.medicalHistory || {}

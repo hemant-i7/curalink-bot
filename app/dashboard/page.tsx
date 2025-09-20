@@ -32,10 +32,6 @@ export default function Dashboard() {
           }
           
           if (data.role === 'patient') {
-            if (!data.hasCompletedInfo) {
-              router.push('/faiz/info')
-              return
-            }
             router.push('/patient/dashboard')
             return
           }
