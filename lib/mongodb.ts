@@ -49,5 +49,8 @@ async function connectToDatabase(): Promise<typeof mongoose> {
   return cached.conn;
 }
 
-export { connectToDatabase };
+// Legacy function name for backward compatibility
+const connectDB = connectToDatabase;
+
+export { connectToDatabase, connectDB };
 export default connectToDatabase;

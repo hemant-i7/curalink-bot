@@ -1,13 +1,72 @@
 "use client"
 
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Brain, FileText, Users, TrendingUp, Stethoscope, Activity, Plus, BarChart3 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Brain, FileText, Users, TrendingUp, Stethoscope, Activity, Plus, BarChart3, Calendar, Clock, IndianRupee, UserCheck } from "lucide-react"
+
+interface DoctorAppointment {
+  id: string
+  appointmentId: string
+  patientName: string
+  date: string
+  time: string
+  status: string
+  consultationFee: number
+  paymentStatus: string
+}
 
 export default function MedicalDashboard() {
   const router = useRouter()
+  const { data: session } = useSession()
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null)
+  const [appointments, setAppointments] = useState<DoctorAppointment[]>([])
+  const [doctorInfo, setDoctorInfo] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    checkDoctorProfile()
+    fetchAppointments()
+  }, [])
+
+  const checkDoctorProfile = async () => {
+    try {
+      const response = await fetch("/api/doctors/profile")
+      if (response.ok) {
+        setHasProfile(true)
+      } else if (response.status === 404) {
+        setHasProfile(false)
+        router.push("/medical/profile-setup")
+      }
+    } catch (error) {
+      console.error("Error checking doctor profile:", error)
+      setHasProfile(false)
+    }
+  }
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch("/api/doctors/appointments")
+      const data = await response.json()
+      
+      if (data.success) {
+        setAppointments(data.appointments || [])
+        setDoctorInfo(data.doctorInfo)
+      }
+    } catch (error) {
+      console.error("Failed to fetch appointments:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (hasProfile === false) {
+    return null // Will redirect to profile setup
+  }
 
   const dashboardOptions = [
     {
@@ -78,7 +137,90 @@ export default function MedicalDashboard() {
           <p className="text-xl font-poppins text-[#151616]/70">
             AI-powered medical diagnosis system for clinicians
           </p>
+          {doctorInfo && (
+            <div className="mt-4 flex items-center justify-center gap-4">
+              <Badge className="bg-[#D6F32F] text-[#151616] border-[#151616]">
+                {doctorInfo.specialization}
+              </Badge>
+              <span className="text-[#151616]/70">
+                {doctorInfo.totalConsultations} consultations completed
+              </span>
+            </div>
+          )}
         </motion.div>
+
+        {/* Appointments Section */}
+        {!loading && appointments.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mb-8"
+          >
+            <Card className="border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616]">
+              <CardHeader>
+                <CardTitle className="font-instrument-serif font-bold text-[#151616] flex items-center gap-2">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                  Your Appointments
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {appointments.slice(0, 6).map((appointment, index) => (
+                    <motion.div
+                      key={appointment.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      className="p-4 bg-white rounded-xl border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616]"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-poppins font-bold text-[#151616] text-sm">
+                          {appointment.patientName}
+                        </h4>
+                        <Badge 
+                          className={
+                            appointment.status === "scheduled" 
+                              ? "bg-blue-100 text-blue-800 border-blue-200"
+                              : appointment.status === "completed"
+                              ? "bg-green-100 text-green-800 border-green-200"
+                              : "bg-gray-100 text-gray-800 border-gray-200"
+                          }
+                        >
+                          {appointment.status}
+                        </Badge>
+                      </div>
+                      <div className="space-y-1 text-sm text-[#151616]/70">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          <span>{new Date(appointment.date).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          <span>{appointment.time}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <IndianRupee className="w-3 h-3" />
+                          <span>₹{appointment.consultationFee}</span>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                {appointments.length > 6 && (
+                  <div className="mt-4 text-center">
+                    <Button
+                      onClick={() => router.push("/medical/appointments")}
+                      className="bg-white text-[#151616] border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616]"
+                    >
+                      View All {appointments.length} Appointments
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
 
         {/* Stats Cards */}
         <motion.div
