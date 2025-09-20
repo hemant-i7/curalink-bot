@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IPatient extends Document {
   userId: string;
+  role: 'clinician' | 'patient';
   hasCompletedInfo: boolean;
   personalInfo: {
     name?: string;
@@ -32,6 +33,11 @@ const PatientSchema = new Schema<IPatient>({
     required: true,
     unique: true,
     index: true
+  },
+  role: {
+    type: String,
+    enum: ['clinician', 'patient'],
+    required: true
   },
   hasCompletedInfo: {
     type: Boolean,

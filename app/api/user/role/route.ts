@@ -18,44 +18,24 @@ export async function POST(request: Request) {
     await connectDB();
 
     const body = await request.json();
-    const {
-      age,
-      gender,
-      location,
-      height,
-      weight,
-      bloodGroup,
-      occupation,
-      medicalConditions,
-      medications,
-      allergies,
-      familyHistory,
-      surgeries
-    } = body;
+    const { role } = body;
 
-    // Find existing patient or create new one
+    if (!role || !['clinician', 'patient'].includes(role)) {
+      return NextResponse.json(
+        { error: 'Invalid role. Must be either "clinician" or "patient"' },
+        { status: 400 }
+      );
+    }
+
+    // Find existing user or create new one
     let patient = await Patient.findOne({ userId: session.user.email });
     
     const updateData = {
       userId: session.user.email,
-      hasCompletedInfo: true,
+      role: role,
       personalInfo: {
         name: session.user.name || '',
         email: session.user.email,
-        age: parseInt(age),
-        gender,
-        location,
-        height: height ? parseInt(height) : undefined,
-        weight: weight ? parseInt(weight) : undefined,
-        bloodGroup,
-        occupation
-      },
-      medicalHistory: {
-        conditions: medicalConditions || [],
-        medications: medications || [],
-        allergies: allergies || [],
-        surgeries: surgeries || [],
-        familyHistory: familyHistory || []
       }
     };
 
@@ -63,7 +43,7 @@ export async function POST(request: Request) {
       // Update existing patient
       patient = await Patient.findOneAndUpdate(
         { userId: session.user.email },
-        updateData,
+        { $set: updateData },
         { new: true, upsert: true }
       );
     } else {
@@ -73,12 +53,12 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({
-      message: 'User information saved successfully',
-      hasCompletedInfo: true
+      message: 'User role saved successfully',
+      role: role
     });
 
   } catch (error) {
-    console.error('Error saving user info:', error);
+    console.error('Error saving user role:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -102,14 +82,11 @@ export async function GET() {
     const patient = await Patient.findOne({ userId: session.user.email });
     
     return NextResponse.json({
-      hasCompletedInfo: patient?.hasCompletedInfo || false,
-      role: patient?.role || null,
-      personalInfo: patient?.personalInfo || {},
-      medicalHistory: patient?.medicalHistory || {}
+      role: patient?.role || null
     });
 
   } catch (error) {
-    console.error('Error fetching user info:', error);
+    console.error('Error fetching user role:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

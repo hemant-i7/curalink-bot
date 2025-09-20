@@ -15,17 +15,33 @@ export default function Dashboard() {
     if (status === "unauthenticated") {
       router.push("/login")
     } else if (status === "authenticated" && session?.user?.email) {
-      // Check if user has completed their info
+      // Check user role and redirect accordingly
       const checkUserInfo = async () => {
         try {
           const response = await fetch('/api/user/info')
           const data = await response.json()
-          if (!data.hasCompletedInfo) {
-            router.push('/faiz/info')
+          
+          if (!data.role) {
+            router.push('/select-role')
+            return
+          }
+          
+          if (data.role === 'clinician') {
+            router.push('/medical/dashboard')
+            return
+          }
+          
+          if (data.role === 'patient') {
+            if (!data.hasCompletedInfo) {
+              router.push('/faiz/info')
+              return
+            }
+            router.push('/patient/dashboard')
+            return
           }
         } catch (error) {
           console.error('Error checking user info:', error)
-          router.push('/faiz/info')
+          router.push('/select-role')
         }
       }
       checkUserInfo()
