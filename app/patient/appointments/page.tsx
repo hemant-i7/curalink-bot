@@ -105,14 +105,23 @@ export default function AppointmentsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: selectedDoctor.consultationFee,
-          receipt: `appointment_${selectedDoctor.id}_${Date.now()}`
+          receipt: `apt_${Date.now().toString().slice(-8)}`
         })
       })
 
       if (!orderResponse.ok) {
         const errorText = await orderResponse.text()
         console.error("Order creation failed:", errorText)
-        throw new Error(`Order creation failed: ${orderResponse.status}`)
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText)
+        } catch {
+          errorData = { error: errorText }
+        }
+        
+        const errorMessage = errorData.details || errorData.error || `HTTP ${orderResponse.status}`
+        throw new Error(`Payment setup failed: ${errorMessage}`)
       }
 
       const orderData = await orderResponse.json()
@@ -178,8 +187,10 @@ export default function AppointmentsPage() {
       const verifyData = await verifyResponse.json()
 
       if (verifyData.success) {
-        await createAppointment(verifyData.paymentId)
-        await recordPayment(verifyData.paymentId)
+        const appointment = await createAppointment(verifyData.paymentId)
+        if (appointment && appointment.id) {
+          await recordPayment(verifyData.paymentId, orderId, appointment.id)
+        }
       }
     } catch (error) {
       console.error("Payment verification failed:", error)
@@ -202,27 +213,34 @@ export default function AppointmentsPage() {
         })
       })
 
-      if (response.ok) {
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
         setCurrentStep("doctors")
         setSelectedDoctor(null)
         fetchAppointments()
+        return data.appointment
+      } else {
+        throw new Error(data.error || "Failed to create appointment")
       }
     } catch (error) {
       console.error("Failed to create appointment:", error)
+      throw error
     }
   }
 
-  const recordPayment = async (paymentId: string) => {
+  const recordPayment = async (paymentId: string, orderId: string, appointmentId: string) => {
     try {
       await fetch("/api/payment/history", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          appointmentId: "temp_id",
-          doctorName: selectedDoctor?.name,
+          appointmentId,
+          doctorId: selectedDoctor?.id,
           amount: selectedDoctor?.consultationFee,
-          paymentId,
-          status: "success"
+          razorpayPaymentId: paymentId,
+          razorpayOrderId: orderId,
+          status: "completed"
         })
       })
     } catch (error) {
