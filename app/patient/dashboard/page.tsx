@@ -24,7 +24,10 @@ import {
     Activity,
     Stethoscope,
     UserCheck,
+    CreditCard,
 } from "lucide-react";
+import { PaymentHistory } from "@/components/patient/payment-history";
+import { AppointmentHistory } from "@/components/patient/appointment-history";
 
 interface Task {
     id: string;
@@ -548,6 +551,25 @@ export default function PatientDashboard() {
                             </Card>
                         </motion.div>
                     </div>
+                </div>
+
+                {/* Appointment and Payment History */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.3 }}
+                    >
+                        <AppointmentHistory />
+                    </motion.div>
+                    
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.4 }}
+                    >
+                        <PaymentHistory />
+                    </motion.div>
                 </div>
             </div>
         </div>
