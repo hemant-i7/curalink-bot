@@ -156,7 +156,7 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
     <>
       <div className="flex flex-col space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="text-slate-700 font-medium">
+          <Label htmlFor="phoneNumber" className="text-[#151616] font-poppins font-bold">
             Phone Number
           </Label>
           <div className="relative">
@@ -167,7 +167,7 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
               disabled={isLoading}
-              className={`pl-3 pr-10 py-3 bg-white border-2 ${!isValidNumber ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-slate-300 focus:ring-[#5C5FFF] focus:border-[#5C5FFF]'} rounded-xl`}
+              className={`pl-3 pr-10 py-3 bg-white border-2 ${!isValidNumber ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-[#151616] focus:ring-[#D6F32F] focus:border-[#D6F32F]'} rounded-xl font-poppins`}
             />
             {!isValidNumber && (
               <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
@@ -177,12 +177,12 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
           </div>
 
           {!isValidNumber && (
-            <p className="mt-1 text-sm text-red-500">
+            <p className="mt-1 text-sm text-red-500 font-poppins">
               Please enter a valid international phone number with country code
             </p>
           )}
 
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#151616]/60 font-poppins">
             Format: Include country code with + (e.g., +917738705798)
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
         <Button
           onClick={initiateCall}
           disabled={isLoading || !isValidNumber}
-          className="w-full bg-[#5C5FFF] hover:bg-[#5C5FFF]/90 text-white font-medium transition-colors py-3 rounded-xl text-base"
+          className="w-full bg-[#D6F32F] hover:bg-[#D6F32F]/80 text-[#151616] font-poppins font-bold border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616] transition-all py-3 rounded-xl text-base"
         >
           {isLoading ? (
             <>
@@ -206,7 +206,7 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
         </Button>
 
         {errorMessage && (
-          <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 text-red-600 text-sm border border-red-200">
+          <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 text-red-600 text-sm border-2 border-red-200 font-poppins">
             <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
             <span>{errorMessage}</span>
           </div>
@@ -215,31 +215,31 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
 
       {/* Success Dialog */}
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <DialogContent className="sm:max-w-md border-2 border-[#5C5FFF] bg-white shadow-xl rounded-2xl">
+        <DialogContent className="sm:max-w-md border-2 border-[#151616] bg-white shadow-[4px_4px_0px_0px_#151616] rounded-2xl">
           <DialogHeader>
-            <div className="mx-auto bg-[#5C5FFF]/10 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-              <CheckCircle2 className="h-9 w-9 text-[#5C5FFF]" />
+            <div className="mx-auto bg-[#D6F32F]/20 rounded-full w-16 h-16 flex items-center justify-center mb-4 border-2 border-[#151616]">
+              <CheckCircle2 className="h-9 w-9 text-[#151616]" />
             </div>
-            <DialogTitle className="text-center text-xl text-slate-900">Health Consultation Call Initiated!</DialogTitle>
-            <DialogDescription className="text-center text-slate-600">
+            <DialogTitle className="text-center text-xl text-[#151616] font-poppins font-bold">Health Consultation Call Initiated!</DialogTitle>
+            <DialogDescription className="text-center text-[#151616]/70 font-poppins">
               Your AI Health Consultant will call you shortly at {phoneNumber}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex flex-col space-y-3 p-4 bg-[#5C5FFF]/5 rounded-xl">
+          <div className="flex flex-col space-y-3 p-4 bg-[#D6F32F]/10 rounded-xl border border-[#151616]/20">
             <div className="flex justify-center items-center gap-2">
-              <PhoneCall className="h-5 w-5 text-[#5C5FFF]" />
-              <p className="text-[#5C5FFF] font-medium">Get ready to answer your phone</p>
+              <PhoneCall className="h-5 w-5 text-[#151616]" />
+              <p className="text-[#151616] font-poppins font-bold">Get ready to answer your phone</p>
             </div>
 
             {callId && (
-              <div className="bg-white border-2 border-[#5C5FFF]/20 p-3 rounded-xl text-center">
-                <p className="text-xs text-slate-500">Call Reference ID:</p>
-                <p className="font-mono text-sm text-slate-900 break-all">{callId}</p>
+              <div className="bg-white border-2 border-[#151616]/20 p-3 rounded-xl text-center">
+                <p className="text-xs text-[#151616]/60 font-poppins">Call Reference ID:</p>
+                <p className="font-mono text-sm text-[#151616] break-all">{callId}</p>
               </div>
             )}
 
-            <p className="text-sm text-[#5C5FFF]/80 text-center">
+            <p className="text-sm text-[#151616]/70 font-poppins text-center">
               Please answer the incoming call to start your health consultation session
             </p>
           </div>
@@ -247,7 +247,7 @@ export default function HealthCallButton({ assistantId }: HealthCallButtonProps)
           <DialogFooter className="sm:justify-center">
             <Button
               onClick={() => setShowSuccessDialog(false)}
-              className="bg-[#5C5FFF] hover:bg-[#5C5FFF]/90 text-white transition-colors rounded-xl"
+              className="bg-[#D6F32F] hover:bg-[#D6F32F]/80 text-[#151616] font-poppins font-bold border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616] transition-all rounded-xl"
             >
               Got it
             </Button>

@@ -56,6 +56,12 @@ const navigationItems = [
     description: "Schedule and manage visits"
   },
   {
+    title: "Medi Support",
+    href: "/patient/medi-support",
+    icon: Activity,
+    description: "AI-powered medical support"
+  },
+  {
     title: "Health Records",
     href: "/patient/records",
     icon: FileText,
