@@ -11,11 +11,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { User, Heart, MapPin, Briefcase, Shield, ArrowLeft } from "lucide-react"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { User, Heart, Shield, ArrowLeft } from "lucide-react"
 
 const userInfoSchema = z.object({
   age: z.string().min(1, "Age is required"),
@@ -36,7 +36,7 @@ type UserInfoForm = z.infer<typeof userInfoSchema>
 
 const medicalConditionsList = [
   "Diabetes",
-  "Hypertension", 
+  "Hypertension",
   "Asthma",
   "Heart Disease",
   "Arthritis",
@@ -52,7 +52,7 @@ const medicalConditionsList = [
 const familyHistoryConditions = [
   "Heart Disease",
   "Cancer",
-  "Diabetes", 
+  "Diabetes",
   "Hypertension",
   "Stroke",
   "Kidney Disease",
@@ -92,7 +92,7 @@ export default function UserInfoPage() {
     if (status === "unauthenticated") {
       router.push("/login")
     }
-    
+
     // Check if user has already completed info
     const checkUserInfo = async () => {
       if (session?.user?.email) {
@@ -107,7 +107,7 @@ export default function UserInfoPage() {
         }
       }
     }
-    
+
     if (status === "authenticated") {
       checkUserInfo()
     }
@@ -217,7 +217,7 @@ export default function UserInfoPage() {
             <CardContent className="space-y-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  
+
                   {/* Personal Information Section */}
                   <div className="space-y-6">
                     <div className="flex items-center gap-3 mb-4">
@@ -254,11 +254,12 @@ export default function UserInfoPage() {
                                   <SelectValue placeholder="Select gender" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-white/95 backdrop-blur-0">
                                 <SelectItem value="male">Male</SelectItem>
                                 <SelectItem value="female">Female</SelectItem>
                                 <SelectItem value="other">Other</SelectItem>
                               </SelectContent>
+
                             </Select>
                             <FormMessage />
                           </FormItem>
@@ -277,7 +278,7 @@ export default function UserInfoPage() {
                                   <SelectValue placeholder="Select blood group" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-white/95 backdrop-blur-0">
                                 {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
                                   <SelectItem key={bg} value={bg}>{bg}</SelectItem>
                                 ))}
@@ -385,10 +386,10 @@ export default function UserInfoPage() {
                                             return checked
                                               ? field.onChange([...field.value, condition])
                                               : field.onChange(
-                                                  field.value?.filter(
-                                                    (value) => value !== condition
-                                                  )
+                                                field.value?.filter(
+                                                  (value) => value !== condition
                                                 )
+                                              )
                                           }}
                                         />
                                       </FormControl>
@@ -524,10 +525,10 @@ export default function UserInfoPage() {
                                             return checked
                                               ? field.onChange([...field.value, condition])
                                               : field.onChange(
-                                                  field.value?.filter(
-                                                    (value) => value !== condition
-                                                  )
+                                                field.value?.filter(
+                                                  (value) => value !== condition
                                                 )
+                                              )
                                           }}
                                         />
                                       </FormControl>

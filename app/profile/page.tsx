@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { User, Heart, Shield, Edit3, Save, X, ArrowLeft } from "lucide-react"
+import { User, Heart, Shield, Edit3, Save, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const userInfoSchema = z.object({
@@ -70,7 +70,24 @@ export default function ProfilePage() {
   const [medicationsList, setMedicationsList] = useState<string[]>([])
   const [allergiesList, setAllergiesList] = useState<string[]>([])
   const [surgeriesList, setSurgeriesList] = useState<string[]>([])
-  const [userInfo, setUserInfo] = useState<any>(null)
+  const [userInfo, setUserInfo] = useState<{
+    personalInfo?: {
+      age?: number;
+      gender?: string;
+      location?: string;
+      height?: number;
+      weight?: number;
+      bloodGroup?: string;
+      occupation?: string;
+    };
+    medicalHistory?: {
+      conditions?: string[];
+      medications?: string[];
+      allergies?: string[];
+      familyHistory?: string[];
+      surgeries?: string[];
+    };
+  } | null>(null)
 
   const form = useForm<UserInfoForm>({
     resolver: zodResolver(userInfoSchema),
@@ -193,15 +210,16 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
-      {/* Back Button */}
+      {/* Header with Edit Button */}
       <div className="flex items-center justify-between">
-        <Button
-          onClick={() => router.push('/dashboard')}
-          className="bg-white text-[#151616] border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#151616] transition-all duration-200 font-poppins font-medium"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
+        <div>
+          <h1 className="text-3xl font-instrument-serif font-bold text-[#151616] mb-2">
+            Profile Settings
+          </h1>
+          <p className="text-[#151616]/70 font-poppins">
+            Manage your personal and medical information
+          </p>
+        </div>
         
         {!isEditing ? (
           <Button
@@ -231,27 +249,27 @@ export default function ProfilePage() {
         transition={{ duration: 0.6 }}
       >
         <Card className="border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616]">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-6">
-              <Avatar className="w-20 h-20 border-4 border-[#151616]">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-16 h-16 border-2 border-[#151616]">
                 <AvatarImage
                   src={session.user?.image || ""}
                   alt={session.user?.name || "User"}
                 />
-                <AvatarFallback className="bg-[#D6F32F] text-[#151616] font-bold text-2xl">
+                <AvatarFallback className="bg-[#D6F32F] text-[#151616] font-bold text-xl">
                   {session.user?.name?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <h1 className="text-3xl font-instrument-serif font-bold text-[#151616] mb-1">
+                <h2 className="text-xl font-instrument-serif font-bold text-[#151616] mb-1">
                   {session.user?.name}
-                </h1>
-                <p className="text-[#151616]/70 font-poppins mb-2">
+                </h2>
+                <p className="text-[#151616]/70 font-poppins text-sm mb-1">
                   {session.user?.email}
                 </p>
                 <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-[#D6F32F]" />
-                  <span className="text-sm font-poppins text-[#151616]/80">
+                  <Shield className="w-3 h-3 text-[#D6F32F]" />
+                  <span className="text-xs font-poppins text-[#151616]/80">
                     Medical Professional
                   </span>
                 </div>
@@ -285,10 +303,10 @@ export default function ProfilePage() {
               </div>
             ) : isEditing ? (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   
                   {/* Personal Information Section */}
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 bg-[#D6F32F] rounded-lg border-2 border-[#151616] flex items-center justify-center">
                         <User className="w-4 h-4 text-[#151616]" />
@@ -296,7 +314,7 @@ export default function ProfilePage() {
                       <h3 className="text-xl font-poppins font-bold text-[#151616]">Personal Information</h3>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <FormField
                         control={form.control}
                         name="age"
@@ -323,7 +341,7 @@ export default function ProfilePage() {
                                   <SelectValue placeholder="Select gender" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-white/95 backdrop-blur-0">
                                 <SelectItem value="male">Male</SelectItem>
                                 <SelectItem value="female">Female</SelectItem>
                                 <SelectItem value="other">Other</SelectItem>
@@ -346,7 +364,7 @@ export default function ProfilePage() {
                                   <SelectValue placeholder="Select blood group" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent>
+                              <SelectContent className="bg-white/95 backdrop-blur-0">
                                 {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
                                   <SelectItem key={bg} value={bg}>{bg}</SelectItem>
                                 ))}
@@ -358,7 +376,7 @@ export default function ProfilePage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
                         name="location"
@@ -388,7 +406,7 @@ export default function ProfilePage() {
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
                         name="height"
@@ -420,7 +438,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Medical History Section */}
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-8 h-8 bg-[#D6F32F] rounded-lg border-2 border-[#151616] flex items-center justify-center">
                         <Heart className="w-4 h-4 text-[#151616]" />

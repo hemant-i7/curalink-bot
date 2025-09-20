@@ -311,7 +311,7 @@ export default function MedicalDiagnosisPage() {
                   <SelectTrigger className="border-2 border-[#151616]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white/95 backdrop-blur-0">
                     <SelectItem value="sonar-large">Sonar Large (Recommended)</SelectItem>
                     <SelectItem value="sonar-small">Sonar Small (Faster)</SelectItem>
                     <SelectItem value="sonar-huge">Sonar Huge (Most Accurate)</SelectItem>
@@ -325,7 +325,7 @@ export default function MedicalDiagnosisPage() {
                   <SelectTrigger className="border-2 border-[#151616]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white/95 backdrop-blur-0">
                     <SelectItem value="quick">Quick Analysis</SelectItem>
                     <SelectItem value="standard">Standard</SelectItem>
                     <SelectItem value="comprehensive">Comprehensive</SelectItem>
@@ -339,7 +339,7 @@ export default function MedicalDiagnosisPage() {
                   <SelectTrigger className="border-2 border-[#151616]">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white/95 backdrop-blur-0">
                     <SelectItem value="conservative">Conservative (Recommended)</SelectItem>
                     <SelectItem value="balanced">Balanced</SelectItem>
                     <SelectItem value="aggressive">Aggressive</SelectItem>
@@ -415,7 +415,7 @@ export default function MedicalDiagnosisPage() {
                       <SelectTrigger className="border-2 border-[#151616]">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white/95 backdrop-blur-0">
                         {SUPPORTED_LANGUAGES.map((lang) => (
                           <SelectItem key={lang.code} value={lang.code}>
                             {lang.name} ({lang.native})
@@ -444,7 +444,7 @@ export default function MedicalDiagnosisPage() {
                       <SelectTrigger className="border-2 border-[#151616]">
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white/95 backdrop-blur-0">
                         <SelectItem value="male">Male</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="other">Other</SelectItem>

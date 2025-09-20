@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-    let analysisPrompt =
+    const analysisPrompt =
       customPrompt ||
       `Analyze this video comprehensively and provide:
 1. A detailed summary of the content

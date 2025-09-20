@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Brain,
   Users,
   Zap,
   Shield,
-  ChevronDown,
   Stethoscope,
   Activity,
   Target,
 } from "lucide-react";
 import { WorkflowVisualization } from "@/components/landing/workflow-visualization";
 import { ExampleFlow } from "@/components/landing/example-flow";
+import { Dropdown } from "@/components/ui/dropdown";
 
 
 const FeatureCard = ({
@@ -202,7 +202,7 @@ const NavBar = () => {
 
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm md:hidden">
-          <div className="absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] p-6">
+          <div className="absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-0 border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] p-6">
             <nav className="flex flex-col space-y-4">
               <button
                 onClick={() => handleMobileNavClick("features")}
@@ -248,28 +248,42 @@ const NavBar = () => {
 
 
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
   const faqs = [
     {
-      question: "How does CuraLink protect patient medical data?",
-      answer:
-        "We use enterprise-grade encryption and HIPAA-compliant security measures to protect all medical data. Patient information is encrypted in transit and at rest, with role-based access controls and full audit logs.",
+      label: "How does CuraLink protect patient medical data?",
+      value: "data-protection",
+      content: (
+        <p className="text-[#151616]/80 leading-relaxed">
+          We use enterprise-grade encryption and HIPAA-compliant security measures to protect all medical data. Patient information is encrypted in transit and at rest, with role-based access controls and full audit logs.
+        </p>
+      ),
     },
     {
-      question: "Is CuraLink suitable for all medical specialties?",
-      answer:
-        "CuraLink is designed to assist healthcare professionals across various specialties. Our AI agents are trained on diverse medical literature and can provide insights for general practice, internal medicine, and specialized fields.",
+      label: "Is CuraLink suitable for all medical specialties?",
+      value: "medical-specialties",
+      content: (
+        <p className="text-[#151616]/80 leading-relaxed">
+          CuraLink is designed to assist healthcare professionals across various specialties. Our AI agents are trained on diverse medical literature and can provide insights for general practice, internal medicine, and specialized fields.
+        </p>
+      ),
     },
     {
-      question: "How accurate are the AI-powered diagnostic suggestions?",
-      answer:
-        "Our AI agents are trained on vast medical datasets and continuously updated with latest research. While they provide evidence-based suggestions, all recommendations require human clinical judgment and approval from qualified healthcare professionals.",
+      label: "How accurate are the AI-powered diagnostic suggestions?",
+      value: "ai-accuracy",
+      content: (
+        <p className="text-[#151616]/80 leading-relaxed">
+          Our AI agents are trained on vast medical datasets and continuously updated with latest research. While they provide evidence-based suggestions, all recommendations require human clinical judgment and approval from qualified healthcare professionals.
+        </p>
+      ),
     },
     {
-      question: "Can I integrate CuraLink with existing hospital systems?",
-      answer:
-        "Yes, CuraLink supports integration with existing EHR systems through FHIR/HL7 standards and DICOM compatibility. We offer flexible deployment options including on-premise and cloud-based solutions.",
+      label: "Can I integrate CuraLink with existing hospital systems?",
+      value: "integration",
+      content: (
+        <p className="text-[#151616]/80 leading-relaxed">
+          Yes, CuraLink supports integration with existing EHR systems through FHIR/HL7 standards and DICOM compatibility. We offer flexible deployment options including on-premise and cloud-based solutions.
+        </p>
+      ),
     },
   ];
 
@@ -280,38 +294,7 @@ const FAQ = () => {
           Frequently Asked Questions
         </h2>
         <div className="max-w-3xl mx-auto">
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="mb-4"
-            >
-              <button
-                className="flex justify-between items-center w-full text-left p-4 bg-white rounded-xl border-2 border-[#151616] shadow-[4px_4px_0px_0px_#D6F32F] hover:bg-[#D6F32F] transition-colors"
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              >
-                <span className="font-bold text-[#151616]">{faq.question}</span>
-                <ChevronDown
-                  className={`transform transition-transform ${openIndex === index ? "rotate-180" : ""
-                    }`}
-                />
-              </button>
-              <AnimatePresence>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="bg-white p-4 rounded-b-xl border-2 border-t-0 border-[#151616]"
-                  >
-                    <p className="text-[#151616]/70">{faq.answer}</p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+          <Dropdown items={faqs} variant="faq" />
         </div>
       </div>
     </section>

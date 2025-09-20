@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    let { phoneNumber, assistantId: customAssistantId } = body;
+    const { phoneNumber, assistantId: customAssistantId } = body;
 
     // Get default assistant ID from environment variable
     const defaultAssistantId = process.env.NEXT_PUBLIC_VAPI_GENERATE_ASSISTANT_ID;
