@@ -1,18 +1,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
   Users,
   Zap,
   Shield,
-  CircleDot,
-  Triangle,
-  Square,
   ChevronDown,
-  Menu,
-  X,
   Stethoscope,
   Activity,
   Target,
@@ -20,14 +16,6 @@ import {
 import { WorkflowVisualization } from "@/components/landing/workflow-visualization";
 import { ExampleFlow } from "@/components/landing/example-flow";
 
-// Renders client-only bits after mount to avoid SSR/client randomness mismatches
-const useMounted = () => {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  return mounted;
-};
 
 const FeatureCard = ({
   icon: Icon,
@@ -54,300 +42,212 @@ const FeatureCard = ({
   </motion.div>
 );
 
-const FloatingElement = ({
-  children,
-  delay = 0,
-  rotate = false,
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  rotate?: boolean;
-}) => (
-  <motion.div
-    initial={{ y: 10 }}
-    animate={{
-      y: [-10, 10],
-      rotate: rotate ? [-10, 10] : 0,
-    }}
-    transition={{
-      y: {
-        duration: 2,
-        repeat: Number.POSITIVE_INFINITY,
-        repeatType: "reverse",
-        ease: "easeInOut",
-        delay,
-      },
-      rotate: {
-        duration: 3,
-        repeat: Number.POSITIVE_INFINITY,
-        repeatType: "reverse",
-        ease: "easeInOut",
-        delay,
-      },
-    }}
-  >
-    {children}
-  </motion.div>
-);
 
-const GeometricBackground = () => {
-  const shapes = Array(6).fill(null);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {shapes.map((_, index) => (
-        <motion.div
-          key={index}
-          className="absolute"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0.1, 0.3, 0.1] }}
-          transition={{
-            duration: 3,
-            repeat: Number.POSITIVE_INFINITY,
-            delay: index * 0.5,
-          }}
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-        >
-          {index % 3 === 0 ? (
-            <CircleDot className="w-16 h-16 text-[#D6F32F]" />
-          ) : index % 3 === 1 ? (
-            <Triangle className="w-16 h-16 text-[#151616]" />
-          ) : (
-            <Square className="w-16 h-16 text-[#D6F32F]" />
-          )}
-        </motion.div>
-      ))}
-    </div>
-  );
-};
-
-const ParticleEffect = () => {
-  const particles = Array(20).fill(null);
-
-  return (
-    <div className="absolute inset-0 pointer-events-none">
-      {particles.map((_, index) => (
-        <MyComponent key={index} />
-      ))}
-    </div>
-  );
-};
-
-const MyComponent = () => {
-  const [initialX, setInitialX] = useState(0);
-  const [initialY, setInitialY] = useState(0);
-
-  useEffect(() => {
-    setInitialX(Math.random() * window.innerWidth);
-    setInitialY(Math.random() * window.innerHeight);
-  }, []);
-
-  return (
-    <motion.div
-      className="absolute w-2 h-2 bg-[#D6F32F] rounded-full"
-      initial={{
-        x: initialX,
-        y: initialY,
-        scale: 0,
-      }}
-      animate={{
-        y: [0, -30, 0],
-        scale: [0, 1, 0],
-        opacity: [0, 1, 0],
-      }}
-      transition={{
-        duration: 2 + Math.random() * 2,
-        repeat: Number.POSITIVE_INFINITY,
-        delay: Math.random() * 0.2,
-      }}
-    />
-  );
-};
 
 const NavBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleMobileNavClick = (elementId: string) => {
+    setIsMobileMenuOpen(false);
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        const headerOffset = 120;
+        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  };
 
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          <a href="#" className="text-2xl font-instrument-serif font-bold text-[#151616]">
-            CuraLink
-          </a>
-          <div className="hidden md:flex space-x-8">
-            <a
-              href="#features"
-              className="text-[#151616] hover:text-[#D6F32F] transition-colors font-poppins font-medium"
-            >
-              AI Agents
-            </a>
-            <a
-              href="#how-it-works"
-              className="text-[#151616] hover:text-[#D6F32F] transition-colors font-poppins font-medium"
-            >
-              How It Works
-            </a>
-            <a
-              href="#example"
-              className="text-[#151616] hover:text-[#D6F32F] transition-colors font-poppins font-medium"
-            >
-              Live Example
-            </a>
-            <a
-              href="#benefits"
-              className="text-[#151616] hover:text-[#D6F32F] transition-colors font-poppins font-medium"
-            >
-              Benefits
-            </a>
-          </div>
-          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-      </div>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t-2 border-[#151616]"
+    <>
+      <div className="fixed top-4 left-0 right-0 z-[9999] hidden md:flex justify-center">
+        <header
+          className={`flex flex-row items-center justify-between rounded-lg bg-white/95 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] transition-all duration-300 ${
+            isScrolled ? "max-w-3xl px-2" : "max-w-5xl px-4"
+          } py-2 w-full mx-4`}
+          style={{
+            willChange: "transform",
+            transform: "translateZ(0)",
+            backfaceVisibility: "hidden",
+            perspective: "1000px",
+          }}
+        >
+        <Link
+          className={`z-50 flex items-center justify-center gap-2 transition-all duration-300 ${
+            isScrolled ? "ml-4" : ""
+          }`}
+          href="/"
+        >
+          <span className="text-[#151616] font-instrument-serif font-bold tracking-tight text-lg">CuraLink</span>
+        </Link>
+
+        <div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-[#151616]/70 transition duration-200 hover:text-[#151616] md:flex md:space-x-2">
+          <a
+            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("features");
+              if (element) {
+                const headerOffset = 120;
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }
+            }}
           >
-            <div className="container mx-auto px-6 py-4 flex flex-col space-y-4">
-              <a
-                href="#features"
-                className="text-[#151616] hover:text-[#D6F32F] transition-colors"
+            <span className="relative z-20">AI Agents</span>
+          </a>
+          <a
+            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("benefits");
+              if (element) {
+                const headerOffset = 120;
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }
+            }}
+          >
+            <span className="relative z-20">Benefits</span>
+          </a>
+          <a
+            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById("faq");
+              if (element) {
+                const headerOffset = 120;
+                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - headerOffset;
+
+                window.scrollTo({
+                  top: offsetPosition,
+                  behavior: "smooth",
+                });
+              }
+            }}
+          >
+            <span className="relative z-20">FAQ</span>
+          </a>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <a
+            href="/login"
+            className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
+          >
+            Log In
+          </a>
+
+          <a
+            href="/dashboard"
+            className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
+          >
+            Get Started
+          </a>
+        </div>
+        </header>
+      </div>
+
+      <header className="fixed top-4 z-[9999] mx-4 flex w-auto flex-row items-center justify-between rounded-full bg-white/95 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] md:hidden px-4 py-3">
+        <Link
+          className="flex items-center justify-center gap-2"
+          href="/"
+        >
+          <span className="text-[#151616] font-instrument-serif font-bold tracking-tight text-base">CuraLink</span>
+        </Link>
+
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-white/50 border border-[#151616]/20 transition-colors hover:bg-white/80"
+          aria-label="Toggle menu"
+        >
+          <div className="flex flex-col items-center justify-center w-5 h-5 space-y-1">
+            <span
+              className={`block w-4 h-0.5 bg-[#151616] transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1.5" : ""}`}
+            ></span>
+            <span
+              className={`block w-4 h-0.5 bg-[#151616] transition-all duration-300 ${isMobileMenuOpen ? "opacity-0" : ""}`}
+            ></span>
+            <span
+              className={`block w-4 h-0.5 bg-[#151616] transition-all duration-300 ${isMobileMenuOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
+            ></span>
+          </div>
+        </button>
+      </header>
+
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm md:hidden">
+           <div className="absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] p-6">
+            <nav className="flex flex-col space-y-4">
+              <button
+                onClick={() => handleMobileNavClick("features")}
+                className="text-left px-4 py-3 text-lg font-medium text-[#151616]/70 hover:text-[#151616] transition-colors rounded-lg hover:bg-white/50"
               >
-                Features
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-[#151616] hover:text-[#D6F32F] transition-colors"
+                AI Agents
+              </button>
+              <button
+                onClick={() => handleMobileNavClick("benefits")}
+                className="text-left px-4 py-3 text-lg font-medium text-[#151616]/70 hover:text-[#151616] transition-colors rounded-lg hover:bg-white/50"
               >
-                How It Works
-              </a>
-              <a
-                href="#testimonials"
-                className="text-[#151616] hover:text-[#D6F32F] transition-colors"
-              >
-                Testimonials
-              </a>
-              <a
-                href="#faq"
-                className="text-[#151616] hover:text-[#D6F32F] transition-colors"
+                Benefits
+              </button>
+              <button
+                onClick={() => handleMobileNavClick("faq")}
+                className="text-left px-4 py-3 text-lg font-medium text-[#151616]/70 hover:text-[#151616] transition-colors rounded-lg hover:bg-white/50"
               >
                 FAQ
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-};
-
-const HowItWorks = () => {
-  const steps = [
-    {
-      title: "Sign Up",
-      description: "Create your account and set your financial goals.",
-    },
-    {
-      title: "Connect Accounts",
-      description:
-        "Securely link your financial accounts for a comprehensive view.",
-    },
-    {
-      title: "Get Insights",
-      description:
-        "Receive AI-powered analysis and personalized recommendations.",
-    },
-    {
-      title: "Take Action",
-      description: "Make informed decisions and track your progress over time.",
-    },
-  ];
-
-  return (
-    <section id="how-it-works" className="py-20 bg-[#FFFFF4]">
-      <div className="container mx-auto px-6">
-        <h2 className="text-4xl font-bold text-center mb-12 text-[#151616]">
-          How It Works
-        </h2>
-        <div className="grid md:grid-cols-4 gap-8">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="flex flex-col items-center text-center"
-            >
-              <div className="w-16 h-16 bg-[#D6F32F] rounded-full flex items-center justify-center text-2xl font-bold text-[#151616] mb-4">
-                {index + 1}
+              </button>
+              <div className="border-t border-[#151616]/20 pt-4 mt-4 flex flex-col space-y-3">
+                <a
+                  href="/login"
+                  className="px-4 py-3 text-lg font-poppins font-bold text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] rounded-lg shadow-lg hover:-translate-y-0.5 transition-all duration-200 border-2 border-[#151616]"
+                >
+                  Log In
+                </a>
+                <a
+                  href="/dashboard"
+                  className="px-4 py-3 text-lg font-poppins font-bold text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] rounded-lg shadow-lg hover:-translate-y-0.5 transition-all duration-200 border-2 border-[#151616]"
+                >
+                  Get Started
+                </a>
               </div>
-              <h3 className="text-xl font-bold mb-2 text-[#151616]">
-                {step.title}
-              </h3>
-              <p className="text-[#151616]/70">{step.description}</p>
-            </motion.div>
-          ))}
+            </nav>
+          </div>
         </div>
-      </div>
-    </section>
+      )}
+    </>
   );
 };
 
-const Testimonial = ({
-  quote,
-  author,
-  company,
-}: {
-  quote: string;
-  author: string;
-  company: string;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    whileInView={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.5 }}
-    className="bg-white p-6 rounded-2xl border-2 border-[#151616] shadow-[4px_4px_0px_0px_#D6F32F]"
-  >
-    <p className="text-lg mb-4 text-[#151616]">&ldquo;{quote}&rdquo;</p>
-    <p className="font-bold text-[#151616]">{author}</p>
-    <p className="text-[#151616]/70">{company}</p>
-  </motion.div>
-);
 
-const Testimonials = () => (
-  <section id="testimonials" className="py-20 bg-[#FFFFF4]">
-    <div className="container mx-auto px-6">
-      <h2 className="text-4xl font-bold text-center mb-12 text-[#151616]">
-        What Our Users Say
-      </h2>
-      <div className="grid md:grid-cols-3 gap-8">
-        <Testimonial
-          quote="FinanceAI has completely transformed how I manage my investments. The personalized advice is spot-on!"
-          author="Sarah J."
-          company="Tech Entrepreneur"
-        />
-        <Testimonial
-          quote="As a beginner investor, the educational resources and AI guidance have been invaluable. Highly recommended!"
-          author="Mike T."
-          company="Graduate Student"
-        />
-        <Testimonial
-          quote="The real-time market analysis has helped me make informed decisions and significantly grow my portfolio."
-          author="Lisa R."
-          company="Financial Analyst"
-        />
-      </div>
-    </div>
-  </section>
-);
+
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -556,8 +456,6 @@ const FinancialAdvisorLanding = () => {
           }}
         />
       </div>
-
-      {/* Background visuals removed to keep SSR/client deterministic */}
 
       <NavBar />
 
