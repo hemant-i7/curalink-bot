@@ -123,25 +123,7 @@ export default function PatientDashboard() {
                 if (leaderboardResponse.ok) {
                     const leaderboardData = await leaderboardResponse.json();
                     if (leaderboardData.success) {
-                        // Add current user to leaderboard if not present
-                        const userInLeaderboard = leaderboardData.leaderboard.find(
-                            (user: any) => user.name === session.user?.name
-                        );
-
-                        if (!userInLeaderboard && session.user?.name) {
-                            const currentUserData = {
-                                id: 'current-user',
-                                name: session.user.name,
-                                coins: userCoins,
-                                level: userLevel,
-                                streak: userStreak,
-                                completedTasks: userCompletedTasks,
-                                avatar: 'Trophy'
-                            };
-                            setLeaderboard([currentUserData, ...leaderboardData.leaderboard]);
-                        } else {
-                            setLeaderboard(leaderboardData.leaderboard);
-                        }
+                        setLeaderboard(leaderboardData.leaderboard);
                     }
                 }
             } catch (error) {

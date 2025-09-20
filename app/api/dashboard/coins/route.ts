@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { User } from "@/lib/models/User";
+import Patient from "@/lib/models/Patient";
 import { CoinTransaction } from "@/lib/models/CoinTransaction";
 import { connectToDatabase } from "@/lib/mongodb";
 
@@ -16,13 +16,14 @@ export async function GET(request: NextRequest) {
 
     await connectToDatabase();
 
-    const user = await User.findOne({ email: session.user.email }).select(
-      "coins level streak completedTasks totalEarned bestStreak"
-    );
+    const patient = await Patient.findOne({
+      userId: session.user.email,
+      role: "patient",
+    }).select("coins level streak completedTasks totalEarned bestStreak");
 
-    if (!user) {
+    if (!patient) {
       return NextResponse.json(
-        { success: false, error: "User not found" },
+        { success: false, error: "Patient not found" },
         { status: 404 }
       );
     }
@@ -30,12 +31,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       userData: {
-        coins: user.coins,
-        level: user.level,
-        streak: user.streak,
-        completedTasks: user.completedTasks,
-        totalEarned: user.totalEarned,
-        bestStreak: user.bestStreak,
+        coins: patient.coins || 0,
+        level: patient.level || 1,
+        streak: patient.streak || 0,
+        completedTasks: patient.completedTasks || 0,
+        totalEarned: patient.totalEarned || 0,
+        bestStreak: patient.bestStreak || 0,
       },
     });
   } catch (error) {
@@ -80,10 +81,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await User.findOne({ email: session.user.email });
-    if (!user) {
+    const patient = await Patient.findOne({
+      userId: session.user.email,
+      role: "patient",
+    });
+    if (!patient) {
       return NextResponse.json(
-        { success: false, error: "User not found" },
+        { success: false, error: "Patient not found" },
         { status: 404 }
       );
     }
@@ -95,7 +99,7 @@ export async function POST(request: NextRequest) {
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     const existingTransaction = await CoinTransaction.findOne({
-      userId: user._id,
+      userId: patient._id,
       taskId: taskId,
       completedAt: {
         $gte: today,
@@ -111,7 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate streak and bonus
-    const lastCompletion = user.lastTaskCompletionDate;
+    const lastCompletion = patient.lastTaskCompletionDate;
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     yesterday.setHours(0, 0, 0, 0);
@@ -125,7 +129,7 @@ export async function POST(request: NextRequest) {
 
       if (lastCompletionDate.getTime() === yesterday.getTime()) {
         // Consecutive day
-        newStreak = user.streak + 1;
+        newStreak = (patient.streak || 0) + 1;
 
         // Apply streak bonus (every 7 days)
         if (newStreak % 7 === 0) {
@@ -136,7 +140,7 @@ export async function POST(request: NextRequest) {
         newStreak = 1;
       } else {
         // Same day or future (shouldn't happen)
-        newStreak = user.streak;
+        newStreak = patient.streak || 0;
       }
     }
 
@@ -144,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     // Create coin transaction record
     const transaction = new CoinTransaction({
-      userId: user._id,
+      userId: patient._id,
       taskId,
       taskTitle,
       taskCategory,
@@ -158,9 +162,9 @@ export async function POST(request: NextRequest) {
 
     await transaction.save();
 
-    // Update user data
-    const updatedUser = await User.findByIdAndUpdate(
-      user._id,
+    // Update patient data
+    const updatedPatient = await Patient.findByIdAndUpdate(
+      patient._id,
       {
         $inc: {
           coins: totalCoinsAwarded,
@@ -182,14 +186,14 @@ export async function POST(request: NextRequest) {
         coinsEarned: totalCoinsAwarded,
         bonusCoins,
         newStreak,
-        newLevel: updatedUser.level,
+        newLevel: updatedPatient.level,
       },
       userData: {
-        coins: updatedUser.coins,
-        level: updatedUser.level,
-        streak: updatedUser.streak,
-        completedTasks: updatedUser.completedTasks,
-        totalEarned: updatedUser.totalEarned,
+        coins: updatedPatient.coins,
+        level: updatedPatient.level,
+        streak: updatedPatient.streak,
+        completedTasks: updatedPatient.completedTasks,
+        totalEarned: updatedPatient.totalEarned,
       },
     });
   } catch (error) {

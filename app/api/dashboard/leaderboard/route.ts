@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { User } from "@/lib/models/User";
+import Patient from "@/lib/models/Patient";
 import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Get top 10 users sorted by total coins
-    const topUsers = await User.find({})
+    // Get top 10 patients sorted by total coins (only patients, not clinicians)
+    const topPatients = await Patient.find({ role: "patient" })
       .select(
-        "name email coins level streak completedTasks avatar totalEarned bestStreak"
+        "userId personalInfo.name coins level streak completedTasks avatar totalEarned bestStreak"
       )
       .sort({ coins: -1, totalEarned: -1 })
       .limit(10)
@@ -21,16 +21,16 @@ export async function GET(request: NextRequest) {
 
     // For now, we'll use a simple ranking based on current coins
     // In a more complex system, you could track weekly coin earnings
-    const leaderboard = topUsers.map((user, index) => ({
-      id: user._id.toString(),
-      name: user.name,
-      coins: user.coins,
-      level: user.level,
-      streak: user.streak,
-      completedTasks: user.completedTasks,
-      avatar: user.avatar || "Users",
-      totalEarned: user.totalEarned,
-      bestStreak: user.bestStreak,
+    const leaderboard = topPatients.map((patient, index) => ({
+      id: patient._id.toString(),
+      name: patient.personalInfo?.name || "Anonymous Patient",
+      coins: patient.coins || 0,
+      level: patient.level || 1,
+      streak: patient.streak || 0,
+      completedTasks: patient.completedTasks || 0,
+      avatar: patient.avatar || "Users",
+      totalEarned: patient.totalEarned || 0,
+      bestStreak: patient.bestStreak || 0,
       rankThisWeek: index + 1,
     }));
 
@@ -57,13 +57,13 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Update weekly rankings for all users
-    const users = await User.find({})
+    // Update weekly rankings for all patients
+    const patients = await Patient.find({ role: "patient" })
       .sort({ coins: -1, totalEarned: -1 })
       .select("_id");
 
-    const updatePromises = users.map((user, index) =>
-      User.findByIdAndUpdate(user._id, { rankThisWeek: index + 1 })
+    const updatePromises = patients.map((patient, index) =>
+      Patient.findByIdAndUpdate(patient._id, { rankThisWeek: index + 1 })
     );
 
     await Promise.all(updatePromises);
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Rankings updated successfully",
-      updatedUsers: users.length,
+      updatedPatients: patients.length,
     });
   } catch (error) {
     console.error("Error updating rankings:", error);

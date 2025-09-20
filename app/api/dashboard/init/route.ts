@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { User } from "@/lib/models/User";
+import Patient from "@/lib/models/Patient";
 import { Task } from "@/lib/models/Task";
 import { connectToDatabase } from "@/lib/mongodb";
 
@@ -7,11 +7,26 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    // Initialize default users for leaderboard
-    const defaultUsers = [
+    // Initialize leaderboard data for existing patients
+    // First, add some demo patients with leaderboard data
+    const demoPatients = [
       {
-        name: "Sarah Chen",
-        email: "sarah.chen@example.com",
+        userId: "sarah.chen@example.com",
+        role: "patient",
+        hasCompletedInfo: true,
+        personalInfo: {
+          name: "Sarah Chen",
+          email: "sarah.chen@example.com",
+          age: 28,
+          gender: "female",
+        },
+        medicalHistory: {
+          conditions: [],
+          medications: [],
+          allergies: [],
+          surgeries: [],
+          familyHistory: [],
+        },
         coins: 1180,
         level: 7,
         streak: 8,
@@ -22,8 +37,22 @@ export async function POST(request: NextRequest) {
         rankThisWeek: 2,
       },
       {
-        name: "Dr. Mike",
-        email: "dr.mike@example.com",
+        userId: "dr.mike@example.com",
+        role: "patient",
+        hasCompletedInfo: true,
+        personalInfo: {
+          name: "Dr. Mike",
+          email: "dr.mike@example.com",
+          age: 34,
+          gender: "male",
+        },
+        medicalHistory: {
+          conditions: [],
+          medications: [],
+          allergies: [],
+          surgeries: [],
+          familyHistory: [],
+        },
         coins: 1050,
         level: 6,
         streak: 15,
@@ -34,8 +63,22 @@ export async function POST(request: NextRequest) {
         rankThisWeek: 3,
       },
       {
-        name: "Alex Runner",
-        email: "alex.runner@example.com",
+        userId: "alex.runner@example.com",
+        role: "patient",
+        hasCompletedInfo: true,
+        personalInfo: {
+          name: "Alex Runner",
+          email: "alex.runner@example.com",
+          age: 25,
+          gender: "other",
+        },
+        medicalHistory: {
+          conditions: [],
+          medications: [],
+          allergies: [],
+          surgeries: [],
+          familyHistory: [],
+        },
         coins: 980,
         level: 6,
         streak: 6,
@@ -45,27 +88,41 @@ export async function POST(request: NextRequest) {
         bestStreak: 12,
         rankThisWeek: 4,
       },
-      {
-        name: "Wellness Guru",
-        email: "wellness.guru@example.com",
-        coins: 875,
-        level: 5,
-        streak: 22,
-        completedTasks: 105,
-        avatar: "Heart",
-        totalEarned: 1750,
-        bestStreak: 25,
-        rankThisWeek: 5,
-      },
     ];
 
-    // Check if users already exist
-    const existingUsers = await User.countDocuments();
-    let createdUsersCount = 0;
+    // Check if demo patients exist, if not create them
+    let createdPatientsCount = 0;
+    for (const demoPatient of demoPatients) {
+      const existingPatient = await Patient.findOne({
+        userId: demoPatient.userId,
+      });
+      if (!existingPatient) {
+        await Patient.create(demoPatient);
+        createdPatientsCount++;
+      }
+    }
 
-    if (existingUsers === 0) {
-      await User.insertMany(defaultUsers);
-      createdUsersCount = defaultUsers.length;
+    // Update existing patients to have default leaderboard fields
+    const existingPatients = await Patient.find({
+      role: "patient",
+      $or: [{ coins: { $exists: false } }, { coins: null }],
+    });
+
+    let updatedPatientsCount = 0;
+    for (const patient of existingPatients) {
+      await Patient.findByIdAndUpdate(patient._id, {
+        $set: {
+          coins: 0,
+          level: 1,
+          streak: 0,
+          completedTasks: 0,
+          avatar: "Users",
+          totalEarned: 0,
+          bestStreak: 0,
+          rankThisWeek: 0,
+        },
+      });
+      updatedPatientsCount++;
     }
 
     // Initialize default tasks
@@ -131,9 +188,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Database initialized successfully",
-      usersCreated: createdUsersCount,
+      demoPatientsCreated: createdPatientsCount,
+      existingPatientsUpdated: updatedPatientsCount,
       tasksCreated: createdTasksCount,
-      existingUsers: existingUsers > 0 ? existingUsers : createdUsersCount,
       existingTasks: existingTasks > 0 ? existingTasks : createdTasksCount,
     });
   } catch (error) {
