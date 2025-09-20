@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { FileText, Upload, Send, TrendingUp, AlertTriangle, CheckCircle, Clock, Activity, BarChart3 } from "lucide-react"
+import { FileText, Upload, Send, TrendingUp, AlertTriangle, CheckCircle, Clock, Activity, BarChart3, Zap, Leaf, Apple, Calendar, ArrowRight, Shield, Heart, Target } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -377,7 +377,10 @@ export default function LabAnalyzerPage() {
                                     <div className="space-y-2">
                                         {analysis.redFlags.map((flag, idx) => (
                                             <div key={idx} className="p-3 bg-red-100 rounded border border-red-300">
-                                                <p className="font-poppins text-red-800">🚨 {flag}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                                                    <p className="font-poppins text-red-800">{flag}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -431,7 +434,10 @@ export default function LabAnalyzerPage() {
                                     <div className="space-y-3">
                                         {analysis.recommendations.immediate.map((action, idx) => (
                                             <div key={idx} className="p-3 bg-red-50 rounded border border-red-200">
-                                                <p className="font-poppins text-[#151616]">⚡ {action}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Zap className="w-4 h-4 text-red-600 flex-shrink-0" />
+                                                    <p className="font-poppins text-[#151616]">{action}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -450,7 +456,10 @@ export default function LabAnalyzerPage() {
                                     <div className="space-y-3">
                                         {analysis.recommendations.lifestyle.map((rec, idx) => (
                                             <div key={idx} className="p-3 bg-green-50 rounded border border-green-200">
-                                                <p className="font-poppins text-[#151616]">🌱 {rec}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Leaf className="w-4 h-4 text-green-600 flex-shrink-0" />
+                                                    <p className="font-poppins text-[#151616]">{rec}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -469,7 +478,10 @@ export default function LabAnalyzerPage() {
                                     <div className="space-y-3">
                                         {analysis.recommendations.dietary.map((diet, idx) => (
                                             <div key={idx} className="p-3 bg-blue-50 rounded border border-blue-200">
-                                                <p className="font-poppins text-[#151616]">🍎 {diet}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Apple className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                                                    <p className="font-poppins text-[#151616]">{diet}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -488,7 +500,10 @@ export default function LabAnalyzerPage() {
                                     <div className="space-y-3">
                                         {analysis.recommendations.followUp.map((follow, idx) => (
                                             <div key={idx} className="p-3 bg-purple-50 rounded border border-purple-200">
-                                                <p className="font-poppins text-[#151616]">📅 {follow}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                                                    <p className="font-poppins text-[#151616]">{follow}</p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -508,9 +523,10 @@ export default function LabAnalyzerPage() {
                                 <div className="space-y-3">
                                     {analysis.nextSteps.map((step, idx) => (
                                         <div key={idx} className="p-3 bg-[#D6F32F]/20 rounded border border-[#D6F32F]">
-                                            <p className="font-poppins text-[#151616]">
-                                                <span className="font-bold">{idx + 1}.</span> {step}
-                                            </p>
+                                            <div className="flex items-center gap-2">
+                                                <ArrowRight className="w-4 h-4 text-[#151616] flex-shrink-0" />
+                                                <p className="font-poppins text-[#151616]">{step}</p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
