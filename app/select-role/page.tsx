@@ -46,11 +46,14 @@ export default function SelectRolePage() {
       })
 
       if (response.ok) {
-        // Simple redirect based on role
+        // Force a session update to reflect the new role
+        await fetch('/api/auth/session?update')
+        
+        // Use router.push for better navigation
         if (role === 'clinician') {
-          window.location.href = '/medical/dashboard'
+          router.push('/medical/dashboard')
         } else {
-          window.location.href = '/patient/dashboard'
+          router.push('/patient/dashboard')
         }
       } else {
         console.error('Failed to save user role')

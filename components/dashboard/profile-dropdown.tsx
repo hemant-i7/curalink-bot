@@ -14,10 +14,22 @@ export function ProfileDropdown() {
     const [isOpen, setIsOpen] = useState(false)
 
     const handleLogout = async () => {
-        await signOut({
-            callbackUrl: "/login",
-            redirect: true,
-        })
+        // Clear any cached data and sign out completely
+        try {
+            // Clear local storage and session storage
+            localStorage.clear()
+            sessionStorage.clear()
+            
+            // Sign out with redirect to login
+            await signOut({
+                callbackUrl: "/login",
+                redirect: true,
+            })
+        } catch (error) {
+            console.error('Logout error:', error)
+            // Force redirect even if signOut fails
+            window.location.href = "/login"
+        }
     }
 
     if (!session?.user) {
