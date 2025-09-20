@@ -10,6 +10,9 @@ export interface IAppointment extends Document {
   date: string;
   time: string;
   consultationFee: number;
+  originalFee?: number;
+  discountAmount?: number;
+  coinsUsed?: number;
   status: "scheduled" | "completed" | "cancelled" | "no-show";
   paymentId?: string;
   paymentStatus: "pending" | "completed" | "failed" | "refunded";
@@ -60,6 +63,20 @@ const AppointmentSchema = new Schema<IAppointment>(
     consultationFee: {
       type: Number,
       required: true,
+      min: 0,
+    },
+    originalFee: {
+      type: Number,
+      min: 0,
+    },
+    discountAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    coinsUsed: {
+      type: Number,
+      default: 0,
       min: 0,
     },
     status: {
