@@ -60,6 +60,12 @@ const navigationItems = [
     href: "/patient/records",
     icon: FileText,
     description: "Your medical history"
+  },
+  {
+    title: "History",
+    href: "/patient/history",
+    icon: TrendingUp,
+    description: "Appointments & payments"
   }
 ]
 
