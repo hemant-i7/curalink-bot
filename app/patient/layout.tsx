@@ -18,35 +18,8 @@ export default function PatientLayout({
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login")
-    } else if (status === "authenticated" && session?.user?.email) {
-      // Verify user is a patient
-      const checkUserRole = async () => {
-        try {
-          const response = await fetch('/api/user/info')
-          const data = await response.json()
-          
-          if (!data.role) {
-            router.push('/select-role')
-            return
-          }
-          
-          if (data.role === 'clinician') {
-            router.push('/medical/dashboard')
-            return
-          }
-          
-          if (data.role === 'patient' && !data.hasCompletedInfo) {
-            router.push('/faiz/info')
-            return
-          }
-        } catch (error) {
-          console.error('Error checking user role:', error)
-          router.push('/select-role')
-        }
-      }
-      checkUserRole()
     }
-  }, [status, session, router])
+  }, [status, router])
 
   if (status === "loading") {
     return (

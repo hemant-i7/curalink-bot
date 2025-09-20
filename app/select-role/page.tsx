@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,27 +17,8 @@ export default function SelectRolePage() {
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login")
-    } else if (status === "authenticated" && session?.user?.email) {
-      // Check if user already has a role
-      const checkUserRole = async () => {
-        try {
-          const response = await fetch('/api/user/info')
-          const data = await response.json()
-          if (data.role) {
-            // User already has a role, redirect to appropriate dashboard
-            if (data.role === 'clinician') {
-              router.push('/medical/dashboard')
-            } else {
-              router.push('/dashboard')
-            }
-          }
-        } catch (error) {
-          console.error('Error checking user role:', error)
-        }
-      }
-      checkUserRole()
     }
-  }, [status, session, router])
+  }, [status, router])
 
   if (status === "loading") {
     return (
@@ -65,11 +46,11 @@ export default function SelectRolePage() {
       })
 
       if (response.ok) {
-        // Redirect based on role
+        // Simple redirect based on role
         if (role === 'clinician') {
-          router.push('/medical/dashboard')
+          window.location.href = '/medical/dashboard'
         } else {
-          router.push('/faiz/info') // Patients need to complete their medical info
+          window.location.href = '/faiz/info'
         }
       } else {
         console.error('Failed to save user role')

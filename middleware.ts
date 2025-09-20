@@ -3,11 +3,11 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export default withAuth(
-  function middleware(request: NextRequest) {
+  function middleware(request: any) {
     const token = request.nextauth.token
     const { pathname } = request.nextUrl
 
-    // Allow access to public routes
+    // Fast path for public routes - no redirects needed
     if (
       pathname.startsWith('/login') ||
       pathname.startsWith('/select-role') ||
@@ -19,32 +19,37 @@ export default withAuth(
       return NextResponse.next()
     }
 
-    // If user is not authenticated, redirect to login
+    // Fast authentication check
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Check if user has selected a role
-    if (!token.role && pathname !== '/select-role') {
+    const userRole = token.role as string
+    const hasCompletedInfo = token.hasCompletedInfo as boolean
+
+    // Fast role-based redirects
+    if (!userRole && pathname !== '/select-role') {
       return NextResponse.redirect(new URL('/select-role', request.url))
     }
 
-    // Role-based route protection
-    const userRole = token.role as string
-
-    // Clinician-only routes
-    if (pathname.startsWith('/medical') && userRole !== 'clinician') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
-
-    // Patient-only routes (like completing profile info)
-    if (pathname.startsWith('/faiz/info') && userRole !== 'patient') {
-      return NextResponse.redirect(new URL('/medical/dashboard', request.url))
-    }
-
-    // Redirect to appropriate dashboard based on role
-    if (pathname === '/dashboard' && userRole === 'clinician') {
-      return NextResponse.redirect(new URL('/medical/dashboard', request.url))
+    // Optimized route protection with early returns
+    if (userRole === 'clinician') {
+      if (pathname.startsWith('/patient/') || pathname.startsWith('/faiz/')) {
+        return NextResponse.redirect(new URL('/medical/dashboard', request.url))
+      }
+      if (pathname === '/dashboard') {
+        return NextResponse.redirect(new URL('/medical/dashboard', request.url))
+      }
+    } else if (userRole === 'patient') {
+      if (pathname.startsWith('/medical/')) {
+        return NextResponse.redirect(new URL('/patient/dashboard', request.url))
+      }
+      if (!hasCompletedInfo && pathname.startsWith('/patient/') && pathname !== '/faiz/info') {
+        return NextResponse.redirect(new URL('/faiz/info', request.url))
+      }
+      if (pathname === '/dashboard') {
+        return NextResponse.redirect(new URL(hasCompletedInfo ? '/patient/dashboard' : '/faiz/info', request.url))
+      }
     }
 
     return NextResponse.next()
@@ -54,20 +59,14 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl
         
-        // Allow access to public routes
-        if (
-          pathname.startsWith('/login') ||
-          pathname.startsWith('/select-role') ||
-          pathname.startsWith('/api/auth') ||
-          pathname.startsWith('/_next') ||
-          pathname.startsWith('/favicon.ico') ||
-          pathname === '/'
-        ) {
-          return true
-        }
-
-        // Require authentication for all other routes
-        return !!token
+        // Fast public route check
+        return pathname.startsWith('/login') ||
+               pathname.startsWith('/select-role') ||
+               pathname.startsWith('/api/auth') ||
+               pathname.startsWith('/_next') ||
+               pathname.startsWith('/favicon.ico') ||
+               pathname === '/' ||
+               !!token
       },
     },
   }

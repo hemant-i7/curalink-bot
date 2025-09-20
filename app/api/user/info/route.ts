@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { authOptions, invalidateRoleCache } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Patient from '@/lib/models/Patient';
 
@@ -71,6 +71,9 @@ export async function POST(request: Request) {
       patient = new Patient(updateData);
       await patient.save();
     }
+
+    // Invalidate cache for this user
+    invalidateRoleCache(session.user.email);
 
     return NextResponse.json({
       message: 'User information saved successfully',
