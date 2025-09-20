@@ -78,9 +78,8 @@ const NavBar = () => {
     <>
       <div className="fixed top-4 left-0 right-0 z-[9999] hidden md:flex justify-center">
         <header
-          className={`flex flex-row items-center justify-between rounded-lg bg-white/95 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] transition-all duration-300 ${
-            isScrolled ? "max-w-3xl px-2" : "max-w-5xl px-4"
-          } py-2 w-full mx-4`}
+          className={`flex flex-row items-center justify-between rounded-lg bg-white/95 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] transition-all duration-300 ${isScrolled ? "max-w-3xl px-2" : "max-w-5xl px-4"
+            } py-2 w-full mx-4`}
           style={{
             willChange: "transform",
             transform: "translateZ(0)",
@@ -88,90 +87,89 @@ const NavBar = () => {
             perspective: "1000px",
           }}
         >
-        <Link
-          className={`z-50 flex items-center justify-center gap-2 transition-all duration-300 ${
-            isScrolled ? "ml-4" : ""
-          }`}
-          href="/"
-        >
-          <span className="text-[#151616] font-instrument-serif font-bold tracking-tight text-lg">CuraLink</span>
-        </Link>
-
-        <div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-[#151616]/70 transition duration-200 hover:text-[#151616] md:flex md:space-x-2">
-          <a
-            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              const element = document.getElementById("features");
-              if (element) {
-                const headerOffset = 120;
-                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - headerOffset;
-
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth",
-                });
-              }
-            }}
+          <Link
+            className={`z-50 flex items-center justify-center gap-2 transition-all duration-300 ${isScrolled ? "ml-4" : ""
+              }`}
+            href="/"
           >
-            <span className="relative z-20">AI Agents</span>
-          </a>
-          <a
-            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              const element = document.getElementById("benefits");
-              if (element) {
-                const headerOffset = 120;
-                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - headerOffset;
+            <span className="text-[#151616] font-instrument-serif font-bold tracking-tight text-lg">CuraLink</span>
+          </Link>
 
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            <span className="relative z-20">Benefits</span>
-          </a>
-          <a
-            className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              const element = document.getElementById("faq");
-              if (element) {
-                const headerOffset = 120;
-                const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                const offsetPosition = elementPosition - headerOffset;
+          <div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-[#151616]/70 transition duration-200 hover:text-[#151616] md:flex md:space-x-2">
+            <a
+              className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById("features");
+                if (element) {
+                  const headerOffset = 120;
+                  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                  const offsetPosition = elementPosition - headerOffset;
 
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            <span className="relative z-20">FAQ</span>
-          </a>
-        </div>
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth",
+                  });
+                }
+              }}
+            >
+              <span className="relative z-20">AI Agents</span>
+            </a>
+            <a
+              className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById("benefits");
+                if (element) {
+                  const headerOffset = 120;
+                  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                  const offsetPosition = elementPosition - headerOffset;
 
-        <div className="flex items-center gap-4">
-          <a
-            href="/login"
-            className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
-          >
-            Log In
-          </a>
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth",
+                  });
+                }
+              }}
+            >
+              <span className="relative z-20">Benefits</span>
+            </a>
+            <a
+              className="relative px-4 py-2 text-[#151616]/70 hover:text-[#151616] transition-colors cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                const element = document.getElementById("faq");
+                if (element) {
+                  const headerOffset = 120;
+                  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                  const offsetPosition = elementPosition - headerOffset;
 
-          <a
-            href="/dashboard"
-            className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
-          >
-            Get Started
-          </a>
-        </div>
+                  window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth",
+                  });
+                }
+              }}
+            >
+              <span className="relative z-20">FAQ</span>
+            </a>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <a
+              href="/login"
+              className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
+            >
+              Log In
+            </a>
+
+            <a
+              href="/dashboard"
+              className="rounded-md font-poppins font-bold relative cursor-pointer hover:-translate-y-0.5 transition duration-200 inline-block text-center bg-gradient-to-b from-[#D6F32F] to-[#D6F32F]/80 text-[#151616] shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset] px-4 py-2 text-sm border-2 border-[#151616]"
+            >
+              Get Started
+            </a>
+          </div>
         </header>
       </div>
 
@@ -204,7 +202,7 @@ const NavBar = () => {
 
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm md:hidden">
-           <div className="absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] p-6">
+          <div className="absolute top-20 left-4 right-4 bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] p-6">
             <nav className="flex flex-col space-y-4">
               <button
                 onClick={() => handleMobileNavClick("features")}
@@ -254,24 +252,24 @@ const FAQ = () => {
 
   const faqs = [
     {
-      question: "How does FinanceAI protect my financial data?",
+      question: "How does CuraLink protect patient medical data?",
       answer:
-        "We use bank-level encryption and security measures to protect your data. We never store your login credentials and use secure APIs to connect to your financial institutions.",
+        "We use enterprise-grade encryption and HIPAA-compliant security measures to protect all medical data. Patient information is encrypted in transit and at rest, with role-based access controls and full audit logs.",
     },
     {
-      question: "Is FinanceAI suitable for beginners?",
+      question: "Is CuraLink suitable for all medical specialties?",
       answer:
-        "FinanceAI is designed to cater to investors of all levels. We provide educational resources and personalized advice tailored to your experience and goals.",
+        "CuraLink is designed to assist healthcare professionals across various specialties. Our AI agents are trained on diverse medical literature and can provide insights for general practice, internal medicine, and specialized fields.",
     },
     {
-      question: "How accurate are the AI-powered predictions?",
+      question: "How accurate are the AI-powered diagnostic suggestions?",
       answer:
-        "Our AI models are trained on vast amounts of financial data and are continuously updated. While no prediction is 100% accurate, our models have shown high levels of accuracy and are constantly improving.",
+        "Our AI agents are trained on vast medical datasets and continuously updated with latest research. While they provide evidence-based suggestions, all recommendations require human clinical judgment and approval from qualified healthcare professionals.",
     },
     {
-      question: "Can I cancel my subscription at any time?",
+      question: "Can I integrate CuraLink with existing hospital systems?",
       answer:
-        "Yes, you can cancel your subscription at any time. We offer a 30-day money-back guarantee if you're not satisfied with our service.",
+        "Yes, CuraLink supports integration with existing EHR systems through FHIR/HL7 standards and DICOM compatibility. We offer flexible deployment options including on-premise and cloud-based solutions.",
     },
   ];
 
@@ -325,43 +323,43 @@ const Footer = () => (
     <div className="container mx-auto px-6">
       <div className="grid md:grid-cols-4 gap-8">
         <div>
-          <h3 className="text-xl font-bold mb-4">FinanceAI</h3>
+          <h3 className="text-xl font-bold mb-4 text-[#D6F32F]">CuraLink</h3>
           <p className="text-sm text-gray-400">
-            Empowering your financial future with AI-driven insights and
-            personalized strategies.
+            Empowering healthcare professionals with AI-driven diagnostic insights and
+            multi-agent collaboration for better patient outcomes.
           </p>
         </div>
         <div>
-          <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+          <h4 className="text-lg font-semibold mb-4">Platform</h4>
           <ul className="space-y-2">
             <li>
               <a
                 href="#features"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                Features
+                AI Agents
               </a>
             </li>
             <li>
               <a
-                href="#how-it-works"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                href="#benefits"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                How It Works
+                Benefits
               </a>
             </li>
             <li>
               <a
-                href="#testimonials"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                href="/dashboard"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                Testimonials
+                Dashboard
               </a>
             </li>
             <li>
               <a
                 href="#faq"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
                 FAQ
               </a>
@@ -369,74 +367,95 @@ const Footer = () => (
           </ul>
         </div>
         <div>
-          <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
+          <h4 className="text-lg font-semibold mb-4">Resources</h4>
           <ul className="space-y-2">
             <li>
               <a
-                href="mailto:support@financeai.com"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                href="/medical"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                support@financeai.com
+                Medical Tools
               </a>
             </li>
             <li>
               <a
-                href="tel:+1234567890"
-                className="text-sm text-gray-400 hover:text-[#D6F32F]"
+                href="/lab-analyzer"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                +1 (234) 567-890
+                Lab Analyzer
+              </a>
+            </li>
+            <li>
+              <a
+                href="/nutrition-ai"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
+              >
+                Nutrition AI
+              </a>
+            </li>
+            <li>
+              <a
+                href="/consultations"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
+              >
+                Consultations
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h4 className="text-lg font-semibold mb-4">Follow Us</h4>
-          <div className="flex space-x-4">
-            <a href="#" className="text-gray-400 hover:text-[#D6F32F]">
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+          <h4 className="text-lg font-semibold mb-4">Support</h4>
+          <ul className="space-y-2">
+            <li>
+              <a
+                href="mailto:support@curalink.com"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-[#D6F32F]">
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
+                support@curalink.com
+              </a>
+            </li>
+            <li>
+              <a
+                href="tel:+1-800-CURALINK"
+                className="text-sm text-gray-400 hover:text-[#D6F32F] transition-colors"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </a>
-            <a href="#" className="text-gray-400 hover:text-[#D6F32F]">
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-              </svg>
-            </a>
-          </div>
+                +1 (800) CURALINK
+              </a>
+            </li>
+            <li>
+              <span className="text-sm text-gray-400">
+                HIPAA Compliant
+              </span>
+            </li>
+            <li>
+              <span className="text-sm text-gray-400">
+                24/7 Medical Support
+              </span>
+            </li>
+          </ul>
         </div>
       </div>
-      <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-        <p className="text-sm text-gray-400">
-          &copy; 2023 FinanceAI. All rights reserved.
-        </p>
+      <div className="mt-8 pt-8 border-t border-gray-700">
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-sm text-gray-400 mb-4 md:mb-0">
+            &copy; 2025 CuraLink. All rights reserved. | Privacy Policy | Terms of Service
+          </p>
+          <div className="flex items-center space-x-4">
+            <span className="text-xs text-gray-500">Powered by AI</span>
+            <div className="flex space-x-3">
+              <a href="#" className="text-gray-400 hover:text-[#D6F32F] transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-400 hover:text-[#D6F32F] transition-colors">
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
