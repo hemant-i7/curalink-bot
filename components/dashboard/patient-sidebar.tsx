@@ -26,7 +26,9 @@ import {
   TrendingUp,
   User,
   LogOut,
-
+  Stethoscope,
+  ClipboardList,
+  HeartHandshake
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 
@@ -40,14 +42,14 @@ const navigationItems = [
   {
     title: "Medic Analyzer",
     href: "/patient/medicine",
-    icon: Activity,
-    description: "AI-powered symptom analysis"
+    icon: Pill,
+    description: "AI-powered medicine analysis"
   },
   {
     title: "Prescription",
     href: "/patient/lab-analyzer",
-    icon: Activity,
-    description: "AI-powered symptom analysis"
+    icon: ClipboardList,
+    description: "Lab reports and prescriptions"
   },
   {
     title: "Appointments",
@@ -58,7 +60,7 @@ const navigationItems = [
   {
     title: "Medi Support",
     href: "/patient/medi-support",
-    icon: Activity,
+    icon: HeartHandshake,
     description: "AI-powered medical support"
   },
   {
