@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { useSession } from "next-auth/react";
 import {
     Trophy,
     Coins,
@@ -52,11 +53,16 @@ interface User {
 }
 
 export default function PatientDashboard() {
-    const [userCoins, setUserCoins] = useState(1250);
-    const [userLevel, setUserLevel] = useState(8);
-    const [userStreak, setUserStreak] = useState(12);
+    const { data: session } = useSession();
+    const [userCoins, setUserCoins] = useState(0);
+    const [userLevel, setUserLevel] = useState(1);
+    const [userStreak, setUserStreak] = useState(0);
+    const [userCompletedTasks, setUserCompletedTasks] = useState(0);
+    const [userTotalEarned, setUserTotalEarned] = useState(0);
+    const [userBestStreak, setUserBestStreak] = useState(0);
     const [showCoinAnimation, setShowCoinAnimation] = useState(false);
     const [earnedCoins, setEarnedCoins] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Function to render avatar icons with thematic colors
     const renderAvatarIcon = (iconName: string) => {
@@ -76,139 +82,145 @@ export default function PatientDashboard() {
         }
     };
 
-    const [dailyTasks, setDailyTasks] = useState<Task[]>([
-        {
-            id: "1",
-            title: "Complete 7 Push-ups",
-            description: "Build upper body strength with 7 push-ups",
-            category: "fitness",
-            coins: 50,
-            difficulty: "easy",
-            completed: false,
-            streak: 0,
-            icon: Activity,
-        },
-        {
-            id: "2",
-            title: "Drink 8 Glasses of Water",
-            description: "Stay hydrated throughout the day",
-            category: "wellness",
-            coins: 30,
-            difficulty: "easy",
-            completed: true,
-            streak: 5,
-            icon: Heart,
-        },
-        {
-            id: "3",
-            title: "10-Minute Meditation",
-            description: "Practice mindfulness and reduce stress",
-            category: "wellness",
-            coins: 40,
-            difficulty: "medium",
-            completed: false,
-            streak: 0,
-            icon: Star,
-        },
-        {
-            id: "4",
-            title: "Take Daily Vitamins",
-            description: "Don't forget your daily supplements",
-            category: "medical",
-            coins: 25,
-            difficulty: "easy",
-            completed: false,
-            streak: 0,
-            icon: Plus,
-        },
-        {
-            id: "5",
-            title: "30-Minute Walk",
-            description: "Get your daily cardio exercise",
-            category: "fitness",
-            coins: 60,
-            difficulty: "medium",
-            completed: false,
-            streak: 0,
-            icon: TrendingUp,
-        },
-        {
-            id: "6",
-            title: "Eat 5 Servings of Fruits/Vegetables",
-            description: "Maintain a balanced, nutritious diet",
-            category: "nutrition",
-            coins: 45,
-            difficulty: "medium",
-            completed: false,
-            streak: 0,
-            icon: Heart,
-        },
-    ]);
+    const [dailyTasks, setDailyTasks] = useState<Task[]>([]);
+    const [leaderboard, setLeaderboard] = useState<User[]>([]);
 
-    const [leaderboard, setLeaderboard] = useState<User[]>([
-        {
-            id: "1",
-            name: "You",
-            coins: userCoins,
-            level: userLevel,
-            streak: userStreak,
-            completedTasks: 156,
-            avatar: "Trophy",
-        },
-        {
-            id: "2",
-            name: "Sarah Chen",
-            coins: 1180,
-            level: 7,
-            streak: 8,
-            completedTasks: 142,
-            avatar: "Stethoscope",
-        },
-        {
-            id: "3",
-            name: "Dr. Mike",
-            coins: 1050,
-            level: 6,
-            streak: 15,
-            completedTasks: 128,
-            avatar: "UserCheck",
-        },
-        {
-            id: "4",
-            name: "Alex Runner",
-            coins: 980,
-            level: 6,
-            streak: 6,
-            completedTasks: 119,
-            avatar: "Zap",
-        },
-        {
-            id: "5",
-            name: "Wellness Guru",
-            coins: 875,
-            level: 5,
-            streak: 22,
-            completedTasks: 105,
-            avatar: "Heart",
-        },
-    ]);
+    // Load initial data
+    useEffect(() => {
+        const loadData = async () => {
+            if (!session?.user?.email) return;
 
-    const completeTask = (taskId: string) => {
-        setDailyTasks((prev) =>
-            prev.map((task) => {
-                if (task.id === taskId && !task.completed) {
-                    const newCoins = task.coins;
-                    setEarnedCoins(newCoins);
-                    setUserCoins((prevCoins) => prevCoins + newCoins);
+            try {
+                // Load user data and coins
+                const userResponse = await fetch('/api/dashboard/coins');
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    if (userData.success) {
+                        setUserCoins(userData.userData.coins);
+                        setUserLevel(userData.userData.level);
+                        setUserStreak(userData.userData.streak);
+                        setUserCompletedTasks(userData.userData.completedTasks);
+                        setUserTotalEarned(userData.userData.totalEarned);
+                        setUserBestStreak(userData.userData.bestStreak);
+                    }
+                }
+
+                // Load tasks
+                const tasksResponse = await fetch('/api/dashboard/tasks');
+                if (tasksResponse.ok) {
+                    const tasksData = await tasksResponse.json();
+                    if (tasksData.success) {
+                        const tasksWithIcons = tasksData.tasks.map((task: any) => ({
+                            ...task,
+                            icon: getIconComponent(task.icon)
+                        }));
+                        setDailyTasks(tasksWithIcons);
+                    }
+                }
+
+                // Load leaderboard
+                const leaderboardResponse = await fetch('/api/dashboard/leaderboard');
+                if (leaderboardResponse.ok) {
+                    const leaderboardData = await leaderboardResponse.json();
+                    if (leaderboardData.success) {
+                        // Add current user to leaderboard if not present
+                        const userInLeaderboard = leaderboardData.leaderboard.find(
+                            (user: any) => user.name === session.user?.name
+                        );
+
+                        if (!userInLeaderboard && session.user?.name) {
+                            const currentUserData = {
+                                id: 'current-user',
+                                name: session.user.name,
+                                coins: userCoins,
+                                level: userLevel,
+                                streak: userStreak,
+                                completedTasks: userCompletedTasks,
+                                avatar: 'Trophy'
+                            };
+                            setLeaderboard([currentUserData, ...leaderboardData.leaderboard]);
+                        } else {
+                            setLeaderboard(leaderboardData.leaderboard);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadData();
+    }, [session]);
+
+    // Function to map icon strings to components
+    const getIconComponent = (iconName: string) => {
+        switch (iconName) {
+            case 'Activity': return Activity;
+            case 'Heart': return Heart;
+            case 'Star': return Star;
+            case 'Plus': return Plus;
+            case 'TrendingUp': return TrendingUp;
+            default: return Activity;
+        }
+    };
+
+    const completeTask = async (taskId: string) => {
+        const task = dailyTasks.find(t => t.id === taskId);
+        if (!task || task.completed) return;
+
+        try {
+            const response = await fetch('/api/dashboard/coins', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    taskId: task.id,
+                    taskTitle: task.title,
+                    taskCategory: task.category,
+                    coinsEarned: task.coins,
+                    difficulty: task.difficulty,
+                }),
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success) {
+                    // Update local state
+                    setEarnedCoins(result.transaction.coinsEarned);
+                    setUserCoins(result.userData.coins);
+                    setUserLevel(result.userData.level);
+                    setUserStreak(result.userData.streak);
+                    setUserCompletedTasks(result.userData.completedTasks);
+                    setUserTotalEarned(result.userData.totalEarned);
+
+                    setDailyTasks((prev) =>
+                        prev.map((t) => {
+                            if (t.id === taskId) {
+                                return { ...t, completed: true, streak: result.transaction.newStreak };
+                            }
+                            return t;
+                        })
+                    );
+
                     setShowCoinAnimation(true);
-
                     setTimeout(() => setShowCoinAnimation(false), 2000);
 
-                    return { ...task, completed: true, streak: task.streak + 1 };
+                    // Refresh leaderboard
+                    const leaderboardResponse = await fetch('/api/dashboard/leaderboard');
+                    if (leaderboardResponse.ok) {
+                        const leaderboardData = await leaderboardResponse.json();
+                        if (leaderboardData.success) {
+                            setLeaderboard(leaderboardData.leaderboard);
+                        }
+                    }
                 }
-                return task;
-            })
-        );
+            }
+        } catch (error) {
+            console.error('Error completing task:', error);
+        }
     };
 
     const getCategoryColor = (category: string) => {
@@ -242,6 +254,17 @@ export default function PatientDashboard() {
     const completedTasksCount = dailyTasks.filter((task) => task.completed).length;
     const totalTasks = dailyTasks.length;
     const progressPercentage = (completedTasksCount / totalTasks) * 100;
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-[#FFFFF4] flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-[#151616]/30 border-t-[#151616] rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-[#151616]/70 font-poppins">Loading your health dashboard...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#FFFFF4] p-6 relative">
@@ -533,19 +556,19 @@ export default function PatientDashboard() {
                                 <CardContent className="space-y-4">
                                     <div className="flex justify-between items-center">
                                         <span className="text-[#151616]/70 font-poppins">Tasks Completed</span>
-                                        <span className="font-bold text-[#151616]">156</span>
+                                        <span className="font-bold text-[#151616]">{userCompletedTasks}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-[#151616]/70 font-poppins">Best Streak</span>
-                                        <span className="font-bold text-[#151616]">28 days</span>
+                                        <span className="font-bold text-[#151616]">{userBestStreak} days</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-[#151616]/70 font-poppins">Rank This Week</span>
-                                        <span className="font-bold text-[#151616]">#1</span>
+                                        <span className="text-[#151616]/70 font-poppins">Current Level</span>
+                                        <span className="font-bold text-[#151616]">Level {userLevel}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-[#151616]/70 font-poppins">Total Earned</span>
-                                        <span className="font-bold text-[#151616]">12,450 coins</span>
+                                        <span className="font-bold text-[#151616]">{userTotalEarned.toLocaleString()} coins</span>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -562,7 +585,7 @@ export default function PatientDashboard() {
                     >
                         <AppointmentHistory />
                     </motion.div>
-                    
+
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
