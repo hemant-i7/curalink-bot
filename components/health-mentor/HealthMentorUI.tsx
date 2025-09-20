@@ -87,8 +87,8 @@ const HealthMentorUI: React.FC<HealthMentorUIProps> = ({ assistantId }) => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Call initiation card */}
-          <Card className="bg-white shadow-lg border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#151616] transition-all duration-200 rounded-2xl">
-            <CardHeader className="bg-[#D6F32F] text-[#151616] rounded-t-xl border-b-2 border-[#151616]">
+          <Card className="bg-white  shadow-lg border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#151616] transition-all duration-200 rounded-2xl">
+            <CardHeader className=" text-[#151616] rounded-t-xl border-b-2 border-[#151616]">
               <CardTitle className="flex items-center gap-2 font-poppins font-bold">
                 <Stethoscope className="h-5 w-5" />
                 Start Health Consultation
@@ -107,12 +107,12 @@ const HealthMentorUI: React.FC<HealthMentorUIProps> = ({ assistantId }) => {
 
           {/* How it works card */}
           <Card className="bg-white shadow-lg border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#151616] transition-all duration-200 rounded-2xl">
-            <CardHeader className="bg-[#151616] text-white rounded-t-xl border-b-2 border-[#151616]">
+            <CardHeader className=" text-black rounded-t-xl border-b-2 border-[#151616]">
               <CardTitle className="flex items-center gap-2 font-poppins font-bold">
                 <MessageSquare className="h-5 w-5" />
                 How Health Consultation Works
               </CardTitle>
-              <CardDescription className="text-white/80 font-poppins">
+              <CardDescription className="text-black/80 font-poppins">
                 Experience real-time health consultation with advanced medical AI
               </CardDescription>
             </CardHeader>
