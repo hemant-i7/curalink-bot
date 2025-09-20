@@ -105,8 +105,8 @@ export default function PatientDashboard() {
                     }
                 }
 
-                // Load tasks
-                const tasksResponse = await fetch('/api/dashboard/tasks');
+                // Load daily tasks
+                const tasksResponse = await fetch('/api/dashboard/daily-tasks');
                 if (tasksResponse.ok) {
                     const tasksData = await tasksResponse.json();
                     if (tasksData.success) {
@@ -153,17 +153,13 @@ export default function PatientDashboard() {
         if (!task || task.completed) return;
 
         try {
-            const response = await fetch('/api/dashboard/coins', {
+            const response = await fetch('/api/dashboard/daily-tasks', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     taskId: task.id,
-                    taskTitle: task.title,
-                    taskCategory: task.category,
-                    coinsEarned: task.coins,
-                    difficulty: task.difficulty,
                 }),
             });
 
@@ -181,7 +177,7 @@ export default function PatientDashboard() {
                     setDailyTasks((prev) =>
                         prev.map((t) => {
                             if (t.id === taskId) {
-                                return { ...t, completed: true, streak: result.transaction.newStreak };
+                                return { ...t, completed: true, streak: result.transaction.streak };
                             }
                             return t;
                         })

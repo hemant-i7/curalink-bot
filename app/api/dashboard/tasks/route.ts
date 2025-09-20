@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { Task, UserTaskCompletion } from "@/lib/models/Task";
+import Patient from "@/lib/models/Patient";
 import { connectToDatabase } from "@/lib/mongodb";
 
 export async function GET(request: NextRequest) {
@@ -26,8 +27,21 @@ export async function GET(request: NextRequest) {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
+    // Get the patient document to use its _id
+    const patient = await Patient.findOne({
+      userId: session.user.email,
+      role: "patient",
+    }).select("_id");
+
+    if (!patient) {
+      return NextResponse.json(
+        { success: false, error: "Patient not found" },
+        { status: 404 }
+      );
+    }
+
     const completedToday = await UserTaskCompletion.find({
-      userId: session.user.email, // Using email as identifier for now
+      userId: patient._id,
       completedAt: {
         $gte: today,
         $lt: tomorrow,
