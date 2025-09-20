@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { PaymentHistory } from "@/components/patient/payment-history";
 import { AppointmentHistory } from "@/components/patient/appointment-history";
+import VideoTaskVerification from "@/components/dashboard/video-task-verification";
 
 interface Task {
     id: string;
@@ -63,6 +64,8 @@ export default function PatientDashboard() {
     const [showCoinAnimation, setShowCoinAnimation] = useState(false);
     const [earnedCoins, setEarnedCoins] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [showVideoVerification, setShowVideoVerification] = useState(false);
 
     // Function to render avatar icons with thematic colors
     const renderAvatarIcon = (iconName: string) => {
@@ -148,7 +151,18 @@ export default function PatientDashboard() {
         }
     };
 
-    const completeTask = async (taskId: string) => {
+    const handleTaskComplete = (task: Task) => {
+        // Check if task requires video verification
+        if (task.category === 'fitness' || task.category === 'wellness') {
+            setSelectedTask(task);
+            setShowVideoVerification(true);
+        } else {
+            // Complete task directly for medical/nutrition tasks
+            completeTaskDirectly(task.id);
+        }
+    };
+
+    const completeTaskDirectly = async (taskId: string) => {
         const task = dailyTasks.find(t => t.id === taskId);
         if (!task || task.completed) return;
 
@@ -166,38 +180,54 @@ export default function PatientDashboard() {
             if (response.ok) {
                 const result = await response.json();
                 if (result.success) {
-                    // Update local state
-                    setEarnedCoins(result.transaction.coinsEarned);
-                    setUserCoins(result.userData.coins);
-                    setUserLevel(result.userData.level);
-                    setUserStreak(result.userData.streak);
-                    setUserCompletedTasks(result.userData.completedTasks);
-                    setUserTotalEarned(result.userData.totalEarned);
-
-                    setDailyTasks((prev) =>
-                        prev.map((t) => {
-                            if (t.id === taskId) {
-                                return { ...t, completed: true, streak: result.transaction.streak };
-                            }
-                            return t;
-                        })
-                    );
-
-                    setShowCoinAnimation(true);
-                    setTimeout(() => setShowCoinAnimation(false), 2000);
-
-                    // Refresh leaderboard
-                    const leaderboardResponse = await fetch('/api/dashboard/leaderboard');
-                    if (leaderboardResponse.ok) {
-                        const leaderboardData = await leaderboardResponse.json();
-                        if (leaderboardData.success) {
-                            setLeaderboard(leaderboardData.leaderboard);
-                        }
-                    }
+                    updateTaskCompletion(taskId, result);
                 }
             }
         } catch (error) {
             console.error('Error completing task:', error);
+        }
+    };
+
+    const onVideoTaskCompleted = (result: any) => {
+        if (selectedTask && result.taskCompleted) {
+            updateTaskCompletion(selectedTask.id, result);
+        }
+        setShowVideoVerification(false);
+        setSelectedTask(null);
+    };
+
+    const updateTaskCompletion = async (taskId: string, result: any) => {
+        // Update local state
+        setEarnedCoins(result.transaction.coinsEarned);
+        setUserCoins(result.userData.coins);
+        setUserLevel(result.userData.level);
+        setUserStreak(result.userData.streak);
+        setUserCompletedTasks(result.userData.completedTasks);
+        setUserTotalEarned(result.userData.totalEarned);
+
+        setDailyTasks((prev) =>
+            prev.map((t) => {
+                if (t.id === taskId) {
+                    return { ...t, completed: true, streak: result.transaction.streak || 0 };
+                }
+                return t;
+            })
+        );
+
+        setShowCoinAnimation(true);
+        setTimeout(() => setShowCoinAnimation(false), 2000);
+
+        // Refresh leaderboard
+        try {
+            const leaderboardResponse = await fetch('/api/dashboard/leaderboard');
+            if (leaderboardResponse.ok) {
+                const leaderboardData = await leaderboardResponse.json();
+                if (leaderboardData.success) {
+                    setLeaderboard(leaderboardData.leaderboard);
+                }
+            }
+        } catch (error) {
+            console.error('Error refreshing leaderboard:', error);
         }
     };
 
@@ -434,10 +464,10 @@ export default function PatientDashboard() {
                                                         </div>
                                                         {!task.completed && (
                                                             <Button
-                                                                onClick={() => completeTask(task.id)}
+                                                                onClick={() => handleTaskComplete(task)}
                                                                 className="bg-[#D6F32F] text-[#151616] border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616] transition-all duration-200 font-poppins font-medium"
                                                             >
-                                                                Complete
+                                                                {task.category === 'fitness' || task.category === 'wellness' ? 'Verify with Video' : 'Complete'}
                                                             </Button>
                                                         )}
                                                     </div>
@@ -572,6 +602,19 @@ export default function PatientDashboard() {
                         <PaymentHistory />
                     </motion.div>
                 </div>
+
+                {/* Video Task Verification Modal */}
+                {selectedTask && (
+                    <VideoTaskVerification
+                        task={selectedTask}
+                        isOpen={showVideoVerification}
+                        onClose={() => {
+                            setShowVideoVerification(false);
+                            setSelectedTask(null);
+                        }}
+                        onTaskCompleted={onVideoTaskCompleted}
+                    />
+                )}
             </div>
         </div>
     );
