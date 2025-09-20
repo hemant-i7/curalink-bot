@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Camera, Upload, Send, Pill, AlertTriangle, Clock, User, Heart, FileText } from "lucide-react"
+import { Camera, Upload, Send, Pill, AlertTriangle, Clock, User, Heart, FileText, Shield, Zap, RefreshCw, Activity, Info, Utensils, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
@@ -302,7 +302,10 @@ export default function TestCamPage() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         {analysis.whatItHelps.map((condition, idx) => (
                                             <div key={idx} className="p-2 bg-[#FFFFF4] rounded border border-[#151616]/20">
-                                                <span className="text-sm font-poppins text-[#151616]">• {condition}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <Heart className="w-3 h-3 text-green-600 flex-shrink-0" />
+                                                    <span className="text-sm font-poppins text-[#151616]">{condition}</span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -320,19 +323,39 @@ export default function TestCamPage() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="p-4 bg-[#D6F32F]/20 rounded-xl border border-[#D6F32F]">
-                                        <h5 className="font-poppins font-bold text-[#151616] mb-2">Timing</h5>
-                                        {analysis.whenToTake.timing.map((time, idx) => (
-                                            <p key={idx} className="text-sm font-poppins text-[#151616]">• {time}</p>
-                                        ))}
+                                    <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Clock className="w-5 h-5 text-blue-600" />
+                                            <h5 className="font-poppins font-bold text-[#151616]">Timing</h5>
+                                        </div>
+                                        <div className="space-y-2">
+                                            {analysis.whenToTake.timing.map((time, idx) => (
+                                                <div key={idx} className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
+                                                    <span className="text-sm font-poppins text-[#151616]">{time}</span>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className="p-4 bg-[#D6F32F]/20 rounded-xl border border-[#D6F32F]">
-                                        <h5 className="font-poppins font-bold text-[#151616] mb-2">With Food</h5>
-                                        <p className="text-sm font-poppins text-[#151616]">{analysis.whenToTake.withFood} meals</p>
+                                    <div className="p-4 bg-green-50 rounded-xl border border-green-200">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <Utensils className="w-5 h-5 text-green-600" />
+                                            <h5 className="font-poppins font-bold text-[#151616]">With Food</h5>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 bg-green-600 rounded-full flex-shrink-0"></div>
+                                            <span className="text-sm font-poppins text-[#151616]">{analysis.whenToTake.withFood} meals</span>
+                                        </div>
                                     </div>
-                                    <div className="p-4 bg-[#D6F32F]/20 rounded-xl border border-[#D6F32F]">
-                                        <h5 className="font-poppins font-bold text-[#151616] mb-2">Frequency</h5>
-                                        <p className="text-sm font-poppins text-[#151616]">{analysis.whenToTake.frequency}</p>
+                                    <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <RotateCcw className="w-5 h-5 text-purple-600" />
+                                            <h5 className="font-poppins font-bold text-[#151616]">Frequency</h5>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 bg-purple-600 rounded-full flex-shrink-0"></div>
+                                            <span className="text-sm font-poppins text-[#151616]">{analysis.whenToTake.frequency}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
@@ -353,7 +376,10 @@ export default function TestCamPage() {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                         {analysis.sideEffects.common.map((effect, idx) => (
                                             <div key={idx} className="p-2 bg-yellow-50 rounded border border-yellow-200">
-                                                <span className="text-sm font-poppins text-[#151616]">• {effect}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <Info className="w-3 h-3 text-yellow-600 flex-shrink-0" />
+                                                    <span className="text-sm font-poppins text-[#151616]">{effect}</span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
@@ -366,7 +392,10 @@ export default function TestCamPage() {
                                         <div className="grid grid-cols-1 gap-2">
                                             {analysis.sideEffects.serious.map((effect, idx) => (
                                                 <div key={idx} className="p-2 bg-red-50 rounded border border-red-200">
-                                                    <span className="text-sm font-poppins text-[#151616]">⚠️ {effect}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                                                        <span className="text-sm font-poppins text-[#151616]">{effect}</span>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -380,7 +409,10 @@ export default function TestCamPage() {
                                         <div className="grid grid-cols-1 gap-2">
                                             {analysis.sideEffects.patientSpecific.map((effect, idx) => (
                                                 <div key={idx} className="p-2 bg-blue-50 rounded border border-blue-200">
-                                                    <span className="text-sm font-poppins text-[#151616]">• {effect}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <User className="w-3 h-3 text-blue-600 flex-shrink-0" />
+                                                        <span className="text-sm font-poppins text-[#151616]">{effect}</span>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -394,7 +426,10 @@ export default function TestCamPage() {
                                         <div className="space-y-2">
                                             {analysis.precautions.map((precaution, idx) => (
                                                 <div key={idx} className="p-3 bg-orange-50 rounded border border-orange-200">
-                                                    <span className="text-sm font-poppins text-[#151616]">⚡ {precaution}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <Shield className="w-4 h-4 text-orange-600 flex-shrink-0" />
+                                                        <span className="text-sm font-poppins text-[#151616]">{precaution}</span>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
@@ -416,7 +451,10 @@ export default function TestCamPage() {
                                     <div className="space-y-2">
                                         {analysis.interactions.map((interaction, idx) => (
                                             <div key={idx} className="p-3 bg-purple-50 rounded border border-purple-200">
-                                                <span className="text-sm font-poppins text-[#151616]">🔄 {interaction}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <RefreshCw className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                                                    <span className="text-sm font-poppins text-[#151616]">{interaction}</span>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
