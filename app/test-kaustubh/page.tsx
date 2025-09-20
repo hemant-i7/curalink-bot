@@ -165,13 +165,13 @@ export default function TestKaustubhPage() {
             addLog(`📚 Literature Research Results:`)
             if (researchResult.possibleConditions) {
                 addLog(`🔬 Possible Conditions Found: ${researchResult.possibleConditions.length}`)
-                researchResult.possibleConditions.slice(0, 3).forEach((condition, idx) => {
+                researchResult.possibleConditions.slice(0, 3).forEach((condition: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${condition.name} - ${condition.likelihood}% likelihood`)
                 })
             }
             if (researchResult.recommendedTests) {
                 addLog(`🧪 Recommended Tests:`)
-                researchResult.recommendedTests.slice(0, 2).forEach((test, idx) => {
+                researchResult.recommendedTests.slice(0, 2).forEach((test: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${test.substring(0, 70)}...`)
                 })
             }
@@ -219,13 +219,13 @@ export default function TestKaustubhPage() {
             addLog(`🌍 Epidemiological Analysis:`)
             if (epiResult.currentOutbreaks) {
                 addLog(`📈 Current Outbreaks: ${epiResult.currentOutbreaks.length} identified`)
-                epiResult.currentOutbreaks.slice(0, 2).forEach((outbreak, idx) => {
+                epiResult.currentOutbreaks.slice(0, 2).forEach((outbreak: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${outbreak.name || outbreak.details?.substring(0, 60) || 'Outbreak detected'}`)
                 })
             }
             if (epiResult.seasonalFactors) {
                 addLog(`🗓️ Seasonal Factors:`)
-                epiResult.seasonalFactors.slice(0, 2).forEach((factor, idx) => {
+                epiResult.seasonalFactors.slice(0, 2).forEach((factor: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${typeof factor === 'string' ? factor.substring(0, 70) : factor.factor || 'Seasonal consideration'}`)
                 })
             }
@@ -273,19 +273,19 @@ export default function TestKaustubhPage() {
             addLog(`📊 Pattern Strength: ${patternResult.patternStrength || 'N/A'}%`)
             if (patternResult.similarCases) {
                 addLog(`🔍 Similar Cases Found: ${patternResult.similarCases.length}`)
-                patternResult.similarCases.slice(0, 2).forEach((case_, idx) => {
+                patternResult.similarCases.slice(0, 2).forEach((case_: any, idx: number) => {
                     addLog(`   Case ${idx + 1}: ${case_.finalDiagnosis} (${case_.similarity}% similarity)`)
                 })
             }
             if (patternResult.diagnosticPatterns) {
                 addLog(`🩺 Top Diagnostic Patterns:`)
-                patternResult.diagnosticPatterns.slice(0, 3).forEach((pattern, idx) => {
+                patternResult.diagnosticPatterns.slice(0, 3).forEach((pattern: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${pattern.condition} - ${pattern.confidence}% confidence`)
                 })
             }
             if (patternResult.recommendedActions) {
                 addLog(`💡 Key Recommendations:`)
-                patternResult.recommendedActions.slice(0, 2).forEach((action, idx) => {
+                patternResult.recommendedActions.slice(0, 2).forEach((action: any, idx: number) => {
                     addLog(`   ${idx + 1}. ${action.substring(0, 80)}...`)
                 })
             }
