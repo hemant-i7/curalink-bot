@@ -47,6 +47,8 @@ export default function LabAnalyzerPage() {
     const [isAnalyzing, setIsAnalyzing] = useState(false)
     const [analysis, setAnalysis] = useState<LabAnalysis | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const [isSettingReminder, setIsSettingReminder] = useState(false)
+    const [reminderMessage, setReminderMessage] = useState<string | null>(null)
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]
@@ -111,6 +113,43 @@ export default function LabAnalyzerPage() {
             setError('Failed to analyze lab report. Please try again.')
         } finally {
             setIsAnalyzing(false)
+        }
+    }
+
+    const setReminder = async () => {
+        setIsSettingReminder(true)
+        setReminderMessage(null)
+
+        try {
+            const reminderTime = new Date()
+            reminderTime.setHours(reminderTime.getHours() + 24)
+
+            const requestBody = {
+                message: "Reminder set successfully! You will be notified about your medicine schedule✅",
+                user: "Hemant",
+                time: reminderTime.toISOString()
+            }
+            
+            const webhookUrl = 'https://n8n.alightbeast.in/webhook/aaaa8f9d-0979-48da-aefd-1f6ecc1ad44e'
+
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody)
+            })
+
+            if (response.ok) {
+                setReminderMessage("Reminder set successfully! You will be notified about your medicine schedule.")
+            } else {
+                throw new Error('Failed to set reminder')
+            }
+        } catch (error) {
+            console.error('Error setting reminder:', error)
+            setReminderMessage("Failed to set reminder. Please try again.")
+        } finally {
+            setIsSettingReminder(false)
         }
     }
 
@@ -530,6 +569,53 @@ export default function LabAnalyzerPage() {
                                         </div>
                                     ))}
                                 </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Set Reminder Section */}
+                        <Card className="border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] bg-[#D6F32F]/10">
+                            <CardHeader>
+                                <CardTitle className="font-poppins font-bold text-[#151616] flex items-center gap-2">
+                                    <Calendar className="w-5 h-5" />
+                                    Set Medicine Reminder
+                                </CardTitle>
+                                <CardDescription className="font-poppins">
+                                    Set a reminder to take your medicines based on the analysis recommendations
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {reminderMessage && (
+                                    <Alert className={`border-2 ${reminderMessage.includes('successfully') ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+                                        {reminderMessage.includes('successfully') ? 
+                                            <CheckCircle className="h-4 w-4" /> : 
+                                            <AlertTriangle className="h-4 w-4" />
+                                        }
+                                        <AlertDescription className="font-poppins">
+                                            {reminderMessage}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                                <Button
+                                    onClick={setReminder}
+                                    disabled={isSettingReminder}
+                                    className="w-full bg-[#D6F32F] text-[#151616] border-2 border-[#151616] shadow-[4px_4px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#151616] disabled:opacity-50 disabled:cursor-not-allowed font-poppins font-bold text-lg py-6"
+                                >
+                                    {isSettingReminder ? (
+                                        <>
+                                            <motion.div
+                                                animate={{ rotate: 360 }}
+                                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                                className="w-5 h-5 border-2 border-[#151616] border-t-transparent rounded-full mr-2"
+                                            />
+                                            Setting Reminder...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Calendar className="w-5 h-5 mr-2" />
+                                            Set Medicine Reminder
+                                        </>
+                                    )}
+                                </Button>
                             </CardContent>
                         </Card>
 
