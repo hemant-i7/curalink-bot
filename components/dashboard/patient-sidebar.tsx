@@ -25,7 +25,8 @@ import {
   Pill,
   TrendingUp,
   User,
-  LogOut
+  LogOut,
+
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 
@@ -39,6 +40,12 @@ const navigationItems = [
   {
     title: "Medic Analyzer",
     href: "/patient/medicine",
+    icon: Activity,
+    description: "AI-powered symptom analysis"
+  },
+  {
+    title: "Prescription",
+    href: "/patient/lab-analyzer",
     icon: Activity,
     description: "AI-powered symptom analysis"
   },
