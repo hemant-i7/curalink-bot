@@ -50,7 +50,7 @@ export default function SelectRolePage() {
         if (role === 'clinician') {
           window.location.href = '/medical/dashboard'
         } else {
-          window.location.href = '/faiz/info'
+          window.location.href = '/patient/dashboard'
         }
       } else {
         console.error('Failed to save user role')

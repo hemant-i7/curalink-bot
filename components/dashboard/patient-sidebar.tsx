@@ -4,28 +4,29 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarHeader, 
-  SidebarMenu, 
-  SidebarMenuButton, 
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { 
-  Home, 
-  Activity, 
-  Calendar, 
-  FileText, 
-  MessageCircle, 
-  Settings, 
+import {
+  Home,
+  Activity,
+  Calendar,
+  FileText,
+  MessageCircle,
+  Settings,
   Heart,
   Pill,
   TrendingUp,
   User,
-  LogOut
+  LogOut,
+
 } from "lucide-react"
 import { signOut } from "next-auth/react"
 
@@ -37,8 +38,14 @@ const navigationItems = [
     description: "Overview of your health"
   },
   {
-    title: "Symptom Checker",
-    href: "/patient/symptoms",
+    title: "Medic Analyzer",
+    href: "/patient/medicine",
+    icon: Activity,
+    description: "AI-powered symptom analysis"
+  },
+  {
+    title: "Prescription",
+    href: "/patient/lab-analyzer",
     icon: Activity,
     description: "AI-powered symptom analysis"
   },
@@ -47,6 +54,12 @@ const navigationItems = [
     href: "/patient/appointments",
     icon: Calendar,
     description: "Schedule and manage visits"
+  },
+  {
+    title: "Medi Support",
+    href: "/patient/medi-support",
+    icon: Activity,
+    description: "AI-powered medical support"
   },
   {
     title: "Health Records",
@@ -88,7 +101,7 @@ export function PatientSidebar() {
           {navigationItems.map((item, index) => {
             const Icon = item.icon
             const isActive = pathname === item.href
-            
+
             return (
               <motion.div
                 key={item.href}
@@ -98,15 +111,13 @@ export function PatientSidebar() {
               >
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-200 font-poppins font-medium group ${
-                    isActive
-                      ? "bg-[#D6F32F] border-[#151616] shadow-[2px_2px_0px_0px_#151616] text-[#151616]"
-                      : "border-transparent hover:border-[#151616] hover:bg-[#FFFFF4] hover:shadow-[2px_2px_0px_0px_#151616] text-[#151616]/70 hover:text-[#151616]"
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-200 font-poppins font-medium group ${isActive
+                    ? "bg-[#D6F32F] border-[#151616] shadow-[2px_2px_0px_0px_#151616] text-[#151616]"
+                    : "border-transparent hover:border-[#151616] hover:bg-[#FFFFF4] hover:shadow-[2px_2px_0px_0px_#151616] text-[#151616]/70 hover:text-[#151616]"
+                    }`}
                 >
-                  <Icon className={`w-5 h-5 transition-colors flex-shrink-0 ${
-                    isActive ? "text-[#151616]" : "text-[#151616]/60 group-hover:text-[#151616]"
-                  }`} />
+                  <Icon className={`w-5 h-5 transition-colors flex-shrink-0 ${isActive ? "text-[#151616]" : "text-[#151616]/60 group-hover:text-[#151616]"
+                    }`} />
                   {!isCollapsed && (
                     <span className="font-medium text-sm">{item.title}</span>
                   )}

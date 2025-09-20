@@ -25,7 +25,17 @@ export default withAuth(
     }
 
     const userRole = token.role as string
-    const hasCompletedInfo = token.hasCompletedInfo as boolean
+
+    // Block access to faiz routes for everyone - redirect based on role
+    if (pathname.startsWith('/faiz/')) {
+      if (userRole === 'clinician') {
+        return NextResponse.redirect(new URL('/medical/dashboard', request.url))
+      } else if (userRole === 'patient') {
+        return NextResponse.redirect(new URL('/patient/dashboard', request.url))
+      } else {
+        return NextResponse.redirect(new URL('/select-role', request.url))
+      }
+    }
 
     // Fast role-based redirects
     if (!userRole && pathname !== '/select-role') {
@@ -34,7 +44,7 @@ export default withAuth(
 
     // Optimized route protection with early returns
     if (userRole === 'clinician') {
-      if (pathname.startsWith('/patient/') || pathname.startsWith('/faiz/')) {
+      if (pathname.startsWith('/patient/')) {
         return NextResponse.redirect(new URL('/medical/dashboard', request.url))
       }
       if (pathname === '/dashboard') {
@@ -44,11 +54,8 @@ export default withAuth(
       if (pathname.startsWith('/medical/')) {
         return NextResponse.redirect(new URL('/patient/dashboard', request.url))
       }
-      if (!hasCompletedInfo && pathname.startsWith('/patient/') && pathname !== '/faiz/info') {
-        return NextResponse.redirect(new URL('/faiz/info', request.url))
-      }
       if (pathname === '/dashboard') {
-        return NextResponse.redirect(new URL(hasCompletedInfo ? '/patient/dashboard' : '/faiz/info', request.url))
+        return NextResponse.redirect(new URL('/patient/dashboard', request.url))
       }
     }
 

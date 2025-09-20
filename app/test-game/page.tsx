@@ -48,7 +48,7 @@ interface User {
     avatar: string;
 }
 
-export default function PatientDashboard() {
+const HealthGamePage = () => {
     const [userCoins, setUserCoins] = useState(1250);
     const [userLevel, setUserLevel] = useState(8);
     const [userStreak, setUserStreak] = useState(12);
@@ -247,7 +247,7 @@ export default function PatientDashboard() {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="fixed top-20 right-6 z-50"
+                className="fixed top-6 right-6 z-50"
             >
                 <div className="bg-white border-2 border-[#151616] rounded-2xl shadow-[4px_4px_0px_0px_#D6F32F] px-4 py-2 flex items-center gap-2">
                     <Coins className="w-6 h-6 text-yellow-500" />
@@ -550,6 +550,8 @@ export default function PatientDashboard() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
-}
+};
+
+export default HealthGamePage;
