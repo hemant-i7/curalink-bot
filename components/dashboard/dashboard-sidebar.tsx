@@ -20,54 +20,24 @@ import { cn } from "@/lib/utils"
 const sidebarItems = [
     {
         title: "Dashboard",
-        href: "/dashboard",
+        href: "/medical/dashboard",
         icon: Home,
     },
     {
         title: "AI Diagnosis",
-        href: "/medical",
+        href: "/medical/diagnosis",
         icon: Brain,
     },
     {
-        title: "Medical Dashboard",
-        href: "/medical/dashboard",
-        icon: Activity,
-    },
-    {
-        title: "Patient Cases",
-        href: "/dashboard/cases",
+        title: "Patient Management",
+        href: "/medical/patients",
         icon: FileText,
     },
     {
-        title: "Medical Database",
-        href: "/dashboard/database",
+        title: "Medical Research",
+        href: "/medical/research",
         icon: Database,
-    },
-    {
-        title: "Team Chat",
-        href: "/dashboard/chat",
-        icon: MessageSquare,
-    },
-    {
-        title: "Analytics",
-        href: "/dashboard/analytics",
-        icon: BarChart3,
-    },
-    {
-        title: "Consultations",
-        href: "/dashboard/consultations",
-        icon: Stethoscope,
-    },
-    {
-        title: "Health Monitor",
-        href: "/dashboard/monitor",
-        icon: Activity,
-    },
-    {
-        title: "Settings",
-        href: "/dashboard/settings",
-        icon: Settings,
-    },
+    }
 ]
 
 export function DashboardSidebar() {
