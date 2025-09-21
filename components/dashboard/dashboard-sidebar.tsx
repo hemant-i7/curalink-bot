@@ -31,7 +31,12 @@ const sidebarItems = [
     {
         title: "Patient Management",
         href: "/medical/patients",
-        icon: FileText,
+        icon: Users,
+    },
+    {
+        title: "Medical Analytics",
+        href: "/medical/analytics",
+        icon: BarChart3,
     },
     {
         title: "Medical Research",
@@ -44,7 +49,8 @@ export function DashboardSidebar() {
     const pathname = usePathname()
 
     return (
-        <div className="w-72 bg-white border-r-2 border-[#151616] shadow-[4px_0px_0px_0px_#151616] h-screen overflow-y-auto">
+        <div className="w-72 bg-white h-screen overflow-y-auto relative border-r-4 border-black">
+            <div className="absolute top-0 right-0 w-1 h-full bg-black z-10"></div>
             {/* Logo */}
             <div className="p-6 border-b-2 border-[#151616]">
                 <div className="flex items-center gap-3">

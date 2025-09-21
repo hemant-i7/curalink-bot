@@ -247,13 +247,15 @@ export default function MedicalDashboard() {
         </motion.div>
 
         {/* Main Dashboard Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {dashboardOptions.map((option, index) => {
+        <div className="space-y-8">
+          {/* AI Agent Orchestration - Main Focus */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex justify-center"
+          >
+            {dashboardOptions.filter(option => option.title === "AI Agent Orchestration").map((option, index) => {
             const Icon = option.icon
             return (
               <motion.div
@@ -261,66 +263,112 @@ export default function MedicalDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="w-full max-w-2xl"
               >
                 <Card 
-                  className={`border-2 border-[#151616] shadow-[8px_8px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_#151616] transition-all duration-200 cursor-pointer h-full relative ${
-                    option.isNew ? 'ring-4 ring-[#D6F32F]' : ''
-                  }`}
+                  className={`border-4 border-[#151616] shadow-[16px_16px_0px_0px_#151616] hover:translate-y-2 hover:shadow-[8px_8px_0px_0px_#151616] transition-all duration-300 cursor-pointer h-full relative ring-8 ring-[#D6F32F] bg-gradient-to-br from-white to-[#FFFFF4]`}
                   onClick={() => router.push(option.path)}
                 >
                   {option.isNew && (
-                    <div className="absolute -top-2 -right-2 z-10">
-                      <div className="bg-[#D6F32F] border-2 border-[#151616] rounded-full px-3 py-1">
-                        <span className="text-xs font-poppins font-bold text-[#151616]">NEW</span>
+                    <div className="absolute -top-4 -right-4 z-10">
+                      <div className="bg-[#D6F32F] border-4 border-[#151616] rounded-full px-6 py-2 shadow-[4px_4px_0px_0px_#151616]">
+                        <span className="text-sm font-poppins font-bold text-[#151616]">NEW</span>
                       </div>
                     </div>
                   )}
                   
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-4">
+                  <CardHeader className="pb-8 pt-8">
+                    <div className="flex items-center justify-center mb-8">
                       <div
-                        className="w-16 h-16 rounded-xl border-2 border-[#151616] flex items-center justify-center"
+                        className="w-24 h-24 rounded-2xl border-4 border-[#151616] flex items-center justify-center shadow-[8px_8px_0px_0px_#151616]"
                         style={{ backgroundColor: option.color }}
                       >
                         <Icon
-                          className="w-8 h-8"
+                          className="w-12 h-12"
                           style={{ color: option.color === "#D6F32F" ? "#151616" : "#151616" }}
                         />
                       </div>
-                      {option.isNew && (
-                        <div className="animate-pulse">
-                          <Plus className="w-6 h-6 text-[#D6F32F]" />
-                        </div>
-                      )}
                     </div>
-                    <CardTitle className="text-xl font-poppins font-bold text-[#151616] mb-2">
+                    <CardTitle className="text-3xl font-poppins font-bold text-[#151616] mb-4 text-center">
                       {option.title}
                     </CardTitle>
-                    <CardDescription className="text-[#151616]/70 font-poppins">
+                    <CardDescription className="text-lg text-[#151616]/70 font-poppins text-center leading-relaxed">
                       {option.description}
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent>
+                  <CardContent className="pt-4 pb-8">
                     <Button
-                      className={`w-full border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616] transition-all duration-200 font-poppins font-medium ${
-                        option.color === "#D6F32F" 
-                          ? "bg-[#D6F32F] hover:bg-[#D6F32F]/90 text-[#151616]"
-                          : "bg-white hover:bg-[#FFFFF4] text-[#151616]"
-                      }`}
+                      className="w-full h-16 border-4 border-[#151616] shadow-[8px_8px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[4px_4px_0px_0px_#151616] transition-all duration-300 font-poppins font-bold text-lg bg-[#D6F32F] hover:bg-[#D6F32F]/90 text-[#151616]"
                       onClick={(e) => {
                         e.stopPropagation()
                         router.push(option.path)
                       }}
                     >
-                      {option.isNew ? "Start Diagnosis" : "Open"}
+                      Start Diagnosis
                     </Button>
                   </CardContent>
                 </Card>
               </motion.div>
             )
           })}
-        </motion.div>
+          </motion.div>
+
+          {/* Secondary Options */}
+          {/* <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+          >
+            {dashboardOptions.filter(option => 
+              option.title === "Patient Management" || option.title === "Medical Analytics"
+            ).map((option, index) => {
+              const Icon = option.icon
+              return (
+                <motion.div
+                  key={option.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+                > 
+                  <Card 
+                    className="border-2 border-[#151616] shadow-[6px_6px_0px_0px_#151616] hover:translate-y-1 hover:shadow-[3px_3px_0px_0px_#151616] transition-all duration-200 cursor-pointer h-full"
+                    onClick={() => router.push(option.path)}
+                  >
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div
+                          className="w-14 h-14 rounded-xl border-2 border-[#151616] flex items-center justify-center bg-white"
+                        >
+                          <Icon className="w-7 h-7 text-[#151616]" />
+                        </div>
+                      </div>
+                      <CardTitle className="text-xl font-poppins font-bold text-[#151616] mb-2">
+                        {option.title}
+                      </CardTitle>
+                      <CardDescription className="text-[#151616]/70 font-poppins">
+                        {option.description}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <CardContent>
+                      <Button
+                        className="w-full border-2 border-[#151616] shadow-[2px_2px_0px_0px_#151616] hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_#151616] transition-all duration-200 font-poppins font-medium bg-white hover:bg-[#FFFFF4] text-[#151616]"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          router.push(option.path)
+                        }}
+                      >
+                        Open
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
+          </motion.div> */}
+        </div>
       </div>
     </div>
   )
